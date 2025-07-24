@@ -1,0 +1,61 @@
+##############################
+# Build artifacts
+##############################
+bin/
+obj/
+out/
+TestResults/
+*.log
+
+##############################
+# User-specific files
+##############################
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vspscc
+*.vssscc
+*.pdb
+
+##############################
+# Visual Studio
+##############################
+.vs/
+DocumentLayout.json
+
+##############################
+# Rider / VS Code
+##############################
+.idea/
+.vscode/
+
+##############################
+# ASP.NET Core
+##############################
+appsettings.*.local.json
+appsettings.Development.json
+secrets.json
+
+##############################
+# Publish
+##############################
+*.publish.xml
+publish/
+
+##############################
+# NuGet
+##############################
+*.nupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+##############################
+# Others
+##############################
+*.db
+*.bak
+*.old
+*.cache
