@@ -1,0 +1,63 @@
+## Build results
+bin/
+obj/
+out/
+
+## User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/
+
+## OS generated files
+.DS_Store
+Thumbs.db
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Logs
+*.log
+
+## dotCover
+.idea/.dotCover
+
+## NuGet
+*.nupkg
+# The packages folder can be ignored because of PackageReference
+**/packages/*
+!**/packages/build/
+!**/packages/repositories.config
+.nuget/
+
+## Entity Framework Migrations (optional)
+**/Migrations/
+
+## Secrets
+secrets.json
+
+## Publish
+**/publish/
+*.publish.xml
+
+## Configuration
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.local.json
+
+## Others
+*.db
+*.sqlite
+
+## Test results
+TestResults/
+
+# Auto-generated backup
+*.bak
+*.old
