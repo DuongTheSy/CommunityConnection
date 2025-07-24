@@ -1,0 +1,17 @@
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\bin\Debug\net8.0\CommunityConnection.Infrastructure.deps.json
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\bin\Debug\net8.0\CommunityConnection.Infrastructure.dll
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\bin\Debug\net8.0\CommunityConnection.Infrastructure.pdb
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\CommunityConnection.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\CommunityConnection.Infrastructure.AssemblyInfoInputs.cache
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\CommunityConnection.Infrastructure.AssemblyInfo.cs
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\CommunityConnection.Infrastructure.csproj.CoreCompileInputs.cache
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\CommunityConnection.Infrastructure.dll
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\refint\CommunityConnection.Infrastructure.dll
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\CommunityConnection.Infrastructure.pdb
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\ref\CommunityConnection.Infrastructure.dll
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\bin\Debug\net8.0\CommunityConnection.Infrastructure.runtimeconfig.json
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\CommunityConnection.Infrastructure.csproj.AssemblyReference.cache
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\CommunityConnection.Infrastructure.genruntimeconfig.cache
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\bin\Debug\net8.0\CommunityConnection.Entities.dll
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\bin\Debug\net8.0\CommunityConnection.Entities.pdb
+D:\ThesisProject\CommunityConnection\CommunityConnection.Infrastructure\obj\Debug\net8.0\Communit.3A04131D.Up2Date
