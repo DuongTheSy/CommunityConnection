@@ -16,7 +16,7 @@ namespace CommunityConnection.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<User>> GetAll()
+        public ActionResult GetAll()
         {
             var users = _userService.GetAllUsers();
             return Ok(users);

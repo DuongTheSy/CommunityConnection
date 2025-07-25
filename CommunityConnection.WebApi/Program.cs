@@ -20,6 +20,8 @@ namespace CommunityConnection.WebApi
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<CallGeminiService>();
+
 
             var app = builder.Build();
 
