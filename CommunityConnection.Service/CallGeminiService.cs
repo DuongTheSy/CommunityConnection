@@ -1,4 +1,6 @@
-﻿using CommunityConnection.Infrastructure.Data;
+﻿using Azure;
+using CommunityConnection.Infrastructure.Data;
+using CommunityConnection.WebApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CommunityConnection.Service
 {
@@ -15,43 +18,83 @@ namespace CommunityConnection.Service
         private static readonly string apiKey = "AIzaSyClXZwYVsswlD0fTR1HhUEXY7C2Un9nnKA";
         private static readonly string endpoint = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
 
-        public async Task<string> EvaluateGoals(string goal)
+        public async Task<ApiResponse> EvaluateGoals(string goal)
         {
             using var httpClient = new HttpClient();
             var requestBody = new
             {
                 contents = new[]
             {
-                new
-                {
-                    parts = new[]
+                    new
                     {
-                        new
-                        {
-                            text = $"Đặt lại mục tiêu học {goal} của tôi theo mẫu sau \"Tôi sẽ hoàn thành cái gì thật cụ thể trong bao nhiêu ngày\". " +
-                                   $"Trả lời dưới dạng đoạn văn và ít hơn 20 từ"
+                        parts = new[]
+                    {
+                            new
+                            {
+                                text = $"Mục tiêu học \"{goal}\" đã  đúng theo format 'Tôi sẽ hoàn thành cái gì trong bao nhiêu ngày' chưa\r\n" +
+                                $"Nếu chưa đạt hãy nói\r\n\"status\" : \"false\",\r\n\"result\" : đưa ra đề xuất và không cần giải thích\r\nN" +
+                                $"ếu đạt rồi hãy nói\r\n\"status\" : \"true\",\r\n\"result\" : \"null\"\r\n" +
+                                $"cấm trả lời thừa"
+                            }
                         }
                     }
                 }
-            }
             };
 
             var json = JsonConvert.SerializeObject(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await httpClient.PostAsync(endpoint, content);
+            var response = new HttpResponseMessage();
+            try
+            {
+                response = await httpClient.PostAsync(endpoint, content);
+            }
+            catch
+            {
+                return new ApiResponse
+                {
+                    status = "false",
+                    message = "Mất kết nối mạng"
+                };
+            }     
 
             if (!response.IsSuccessStatusCode)
             {
-                var error = await response.Content.ReadAsStringAsync();
-                throw new HttpRequestException($"Gemini API error: {response.StatusCode} - {error}");
+                JObject error = JObject.Parse(await response.Content.ReadAsStringAsync());
+                return new ApiResponse
+                {
+                    status = "false",
+                    message = $"Lỗi: {error["error"]?["message"]}"
+                };
             }
 
             var responseString = await response.Content.ReadAsStringAsync();
             var responseJson = JObject.Parse(responseString);
-            var resultText = responseJson["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.ToString();
+            var resultText = responseJson["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.ToString().Replace("```json", "").Replace("```", "").Trim();
 
-            return resultText ?? "Không có phản hồi từ Gemini.";
+            try
+            {
+                // Gemini trả về JSON dạng text, cần parse thủ công
+                var parsed = JObject.Parse(resultText);
+
+                return new ApiResponse
+                {
+                    status = "true",
+                    message = "Thành công",
+                    data = new Data
+                    {
+                        status = parsed["status"]?.ToString() ?? "false",
+                        result = parsed["result"]?.ToString()
+                    }
+                };
+            }
+            catch (Exception)
+            {
+                return new ApiResponse
+                {
+                    status = "false",
+                    message = "Phản hồi không hợp lệ từ Gemini."
+                };
+            }
         }
     }
 }

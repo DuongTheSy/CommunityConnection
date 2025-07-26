@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommunityConnection.Common\CommunityConnection.Common.csproj" />
+    <ProjectReference Include="..\CommunityConnection.Entities\CommunityConnection.Entities.csproj" />
     <ProjectReference Include="..\CommunityConnection.Infrastructure\CommunityConnection.Infrastructure.csproj" />
   </ItemGroup>
 
