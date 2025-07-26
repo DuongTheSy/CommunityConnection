@@ -18,7 +18,7 @@ namespace CommunityConnection.Service
         private static readonly string apiKey = "AIzaSyClXZwYVsswlD0fTR1HhUEXY7C2Un9nnKA";
         private static readonly string endpoint = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
 
-        public async Task<ApiResponse> EvaluateGoals(string goal)
+        public async Task<ApiResponse<CheckGoalResponse>> EvaluateGoals(string goal)
         {
             using var httpClient = new HttpClient();
             var requestBody = new
@@ -50,7 +50,7 @@ namespace CommunityConnection.Service
             }
             catch
             {
-                return new ApiResponse
+                return new ApiResponse<CheckGoalResponse>
                 {
                     status = "false",
                     message = "Mất kết nối mạng"
@@ -60,7 +60,7 @@ namespace CommunityConnection.Service
             if (!response.IsSuccessStatusCode)
             {
                 JObject error = JObject.Parse(await response.Content.ReadAsStringAsync());
-                return new ApiResponse
+                return new ApiResponse<CheckGoalResponse>
                 {
                     status = "false",
                     message = $"Lỗi: {error["error"]?["message"]}"
@@ -76,11 +76,11 @@ namespace CommunityConnection.Service
                 // Gemini trả về JSON dạng text, cần parse thủ công
                 var parsed = JObject.Parse(resultText);
 
-                return new ApiResponse
+                return new ApiResponse<CheckGoalResponse>
                 {
                     status = "true",
                     message = "Thành công",
-                    data = new Data
+                    data = new CheckGoalResponse
                     {
                         status = parsed["status"]?.ToString() ?? "false",
                         result = parsed["result"]?.ToString()
@@ -89,7 +89,7 @@ namespace CommunityConnection.Service
             }
             catch (Exception)
             {
-                return new ApiResponse
+                return new ApiResponse<CheckGoalResponse>
                 {
                     status = "false",
                     message = "Phản hồi không hợp lệ từ Gemini."

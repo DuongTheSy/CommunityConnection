@@ -1,4 +1,5 @@
 using CommunityConnection.Service;
+using CommunityConnection.WebApi.Hubs;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityConnection.WebApi
@@ -17,6 +18,28 @@ namespace CommunityConnection.WebApi
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<ThesisContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
+ 
+            builder.Services.AddSignalR();
+            // connect to other devices
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAll", policy =>
+            //    {
+            //        policy.AllowAnyOrigin()
+            //              .AllowAnyMethod()
+            //              .AllowAnyHeader();
+            //    });
+            //});
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                    policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .SetIsOriginAllowed(_ => true)
+                          .AllowCredentials());
+            });
+
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserService>();
@@ -24,8 +47,13 @@ namespace CommunityConnection.WebApi
 
 
             var app = builder.Build();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseCors();
+            app.MapHub<ChatHub>("/chatHub");
 
-            // Configure the HTTP request pipeline.
+            //app.UseCors("AllowAll");
+            //// Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

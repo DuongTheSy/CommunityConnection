@@ -1,13 +1,13 @@
 ﻿namespace CommunityConnection.WebApi.Models
 {
-    public class ApiResponse
+    public class ApiResponse<T>
     {
         public string status { get; set; } = "false";
         public string message { get; set; } = "Chưa xác định";
-        public Data? data { get; set; }
+        public T? data { get; set; }
     }
 
-    public class Data
+    public class CheckGoalResponse
     {
         public string status { get; set; }
         public string? result { get; set; }
