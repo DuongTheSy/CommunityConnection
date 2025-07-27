@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CommunityConnection.Infrastructure.Data;
 
@@ -59,6 +60,7 @@ public partial class User
 
     public virtual ICollection<ReminderNotification> ReminderNotifications { get; set; } = new List<ReminderNotification>();
 
+    [ForeignKey("RoleId")]
     public virtual Role? Role { get; set; }
 
     public virtual ICollection<TextNote> TextNotes { get; set; } = new List<TextNote>();

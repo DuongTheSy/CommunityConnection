@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace CommunityConnection.Infrastructure.Repository
 {
-    public interface IUserRepository
+
+    public class GoalRepository
     {
-        IEnumerable<UserModel> GetAllUsers();
-        UserModel? GetUserById(int id);
-        public string Login(LoginModel loginModel);
     }
 }

@@ -1,6 +1,8 @@
-﻿using CommunityConnection.Infrastructure.Data;
+﻿using CommunityConnection.Common.Helpers;
+using CommunityConnection.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +29,23 @@ namespace CommunityConnection.Infrastructure.Repository
                 DescriptionSkill = u.DescriptionSkill,
                 RoleId = u.RoleId
             }).ToList();
+        }
+
+        public UserModel? GetUserById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Login(LoginModel loginModel)
+        {
+            var user = _db.Users.FirstOrDefault(u => u.Username == loginModel.UserName && u.Password == loginModel.Password);
+            if (user == null)
+            {
+                return string.Empty; // Hoặc throw exception nếu cần
+            }
+            // Giả sử bạn có một phương thức để tạo token
+            var jwtHelper = new JwtHelper();
+            return jwtHelper.GenerateToken(user.Username, user.RoleId == 1 ? "User" : "Admin");
         }
     }
 }

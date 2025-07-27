@@ -22,5 +22,10 @@ namespace CommunityConnection.Service
         {
             return _userRepository.GetAllUsers();
         }
+
+        public string Login(LoginModel loginModel)
+        {
+            return _userRepository.Login(loginModel);
+        }
     }
 }

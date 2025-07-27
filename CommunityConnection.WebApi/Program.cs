@@ -1,5 +1,7 @@
+using CommunityConnection.Common.Helpers;
 using CommunityConnection.Service;
 using CommunityConnection.WebApi.Hubs;
+using CommunityConnection.WebApi.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityConnection.WebApi
@@ -44,7 +46,7 @@ namespace CommunityConnection.WebApi
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<CallGeminiService>();
-
+            builder.Services.AddScoped<JwtHelper>();
 
             var app = builder.Build();
             app.UseDefaultFiles();
@@ -61,7 +63,7 @@ namespace CommunityConnection.WebApi
             }
 
             app.UseHttpsRedirection();
-
+            app.UseMiddleware<JwtAuthMiddleware>();
             app.UseAuthorization();
 
 
