@@ -1,6 +1,6 @@
-﻿using CommunityConnection.Common.Helpers;
+﻿using CommunityConnection.Common;
+using CommunityConnection.Common.Helpers;
 using CommunityConnection.Service;
-using CommunityConnection.WebApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +12,14 @@ namespace CommunityConnection.WebApi.Controllers
     {
         private readonly JwtHelper _jwtHelper;
         private readonly UserService _userService;
+        private readonly ICommunityService _communityService;
 
-        public UserController(UserService userService, JwtHelper jwtHelper)
+
+        public UserController(UserService userService, JwtHelper jwtHelper, ICommunityService communityService)
         {
             _userService = userService;
             _jwtHelper = jwtHelper;
+            _communityService = communityService;
         }
 
         [HttpPost("Login")]
@@ -71,5 +74,23 @@ namespace CommunityConnection.WebApi.Controllers
             var users = _userService.GetAllUsers();
             return Ok(users);
         }
+        [HttpPost("/{userId}/communities")]
+        public async Task<IActionResult> GetUserCommunities(long userId)
+        {
+            var result = await _communityService.GetUserCommunities(userId);
+            return Ok(result);
+        }
+        [HttpGet("/{userId}/communities/{communityId}/channels")]
+        public async Task<IActionResult> GetUserChannelsInCommunity(long userId, long communityId)
+        {
+            var channels = await _communityService.GetChannelsForUserAsync(userId, communityId);
+            return Ok(new ApiResponse<ListChannelResponse>
+            {
+                status = "true",
+                message = "Lấy danh sách kênh thành công",
+                data = channels
+            });
+        }
+
     }
 }

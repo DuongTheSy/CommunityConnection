@@ -47,6 +47,10 @@ namespace CommunityConnection.WebApi
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<CallGeminiService>();
             builder.Services.AddScoped<JwtHelper>();
+            builder.Services.AddScoped<IMessageChannelRepository, MessageChannelRepository>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
+            builder.Services.AddScoped<ICommunityService, CommunityService>();
+            builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
 
             var app = builder.Build();
             app.UseDefaultFiles();

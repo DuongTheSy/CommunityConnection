@@ -1,7 +1,6 @@
 ﻿using Azure;
 using CommunityConnection.Common;
 using CommunityConnection.Infrastructure.Data;
-using CommunityConnection.WebApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

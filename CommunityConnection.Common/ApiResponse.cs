@@ -1,5 +1,5 @@
-﻿namespace CommunityConnection.WebApi.Models
-{
+﻿namespace CommunityConnection.Common 
+{ 
     public class ApiResponse<T>
     {
         public string status { get; set; } = "false";
@@ -11,5 +11,6 @@
     {
         public string status { get; set; }
         public string? result { get; set; }
+
     }
 }
