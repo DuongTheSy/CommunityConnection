@@ -45,7 +45,7 @@ namespace CommunityConnection.Infrastructure.Repository
             }
             // Giả sử bạn có một phương thức để tạo token
             var jwtHelper = new JwtHelper();
-            return jwtHelper.GenerateToken(user.Username, user.RoleId == 1 ? "User" : "Admin");
+            return jwtHelper.GenerateToken(user.Username, user.RoleId == 1 ? "User" : "Admin", user.Id);
         }
     }
 }

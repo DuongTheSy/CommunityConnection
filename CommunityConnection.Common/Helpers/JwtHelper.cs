@@ -13,7 +13,7 @@ namespace CommunityConnection.Common.Helpers
     {
         private readonly string _secretKey = "jS!xU^d03@k#ZnQ9Lm*&hXn56!pqAZxcvj90d$2"; // bảo mật thật thì lưu ở cấu hình
 
-        public string GenerateToken(string username, string role)
+        public string GenerateToken(string username, string role, long id)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_secretKey);
@@ -22,8 +22,10 @@ namespace CommunityConnection.Common.Helpers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
+      
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.NameIdentifier, id.ToString())
             }),
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(

@@ -3,6 +3,7 @@ using CommunityConnection.Common.Helpers;
 using CommunityConnection.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CommunityConnection.WebApi.Controllers
 {
@@ -74,16 +75,38 @@ namespace CommunityConnection.WebApi.Controllers
             var users = _userService.GetAllUsers();
             return Ok(users);
         }
-        [HttpPost("/{userId}/communities")]
-        public async Task<IActionResult> GetUserCommunities(long userId)
+        [HttpGet("/communities")]
+        public async Task<IActionResult> GetUserCommunities()
         {
-            var result = await _communityService.GetUserCommunities(userId);
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("Bạn chưa đăng nhập.");
+            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User ID not found in token.");
+            }
+            long idToken = long.Parse(userIdClaim.Value);
+            var result = await _communityService.GetUserCommunities(idToken);
             return Ok(result);
         }
-        [HttpGet("/{userId}/communities/{communityId}/channels")]
-        public async Task<IActionResult> GetUserChannelsInCommunity(long userId, long communityId)
+        [HttpGet("/communities/{communityId}/channels")]
+        public async Task<IActionResult> GetUserChannelsInCommunity(long communityId)
         {
-            var channels = await _communityService.GetChannelsForUserAsync(userId, communityId);
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("Bạn chưa đăng nhập.");
+            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User ID not found in token.");
+            }
+            long idToken = long.Parse(userIdClaim.Value);
+            var channels = await _communityService.GetChannelsForUserAsync(idToken, communityId);
             return Ok(new ApiResponse<ListChannelResponse>
             {
                 status = "true",

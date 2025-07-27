@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SignalR Chat</title>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+</head>
+<body>
+    <h2>Phòng Chat</h2>
+    <input id="userName" placeholder="Tên bạn" />
+    <input id="roomName" placeholder="Tên phòng" />
+    <button id="joinRoom">Vào phòng</button>
+    <hr />
+    <div id="messages" style="border:1px solid #ccc; padding:10px; height:300px; overflow:auto;"></div>
+    <input id="messageInput" placeholder="Tin nhắn..." style="width: 100%;" />
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start().catch(console.error);
+
+        document.getElementById("joinRoom").addEventListener("click", function () {
+            const user = document.getElementById("userName").value;
+            const room = document.getElementById("roomName").value;
+            connection.invoke("JoinRoom", user, room);
+        });
+
+        document.getElementById("messageInput").addEventListener("keyup", function (e) {
+            if (e.key === "Enter") {
+                const msg = e.target.value;
+                const room = document.getElementById("roomName").value;
+                connection.invoke("SendMessageToRoom", room, msg);
+                e.target.value = "";
+            }
+        });
+
+        connection.on("ReceiveMessage", function (msg) {
+            const messages = document.getElementById("messages");
+            messages.innerHTML += `<p><b>${msg.user}</b>: ${msg.text}</p>`;
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        connection.on("UserJoined", function (user) {
+            document.getElementById("messages").innerHTML += `<p><i>${user} đã tham gia phòng.</i></p>`;
+        });
+
+        connection.on("UserLeft", function (user) {
+            document.getElementById("messages").innerHTML += `<p><i>${user} đã rời phòng.</i></p>`;
+        });
+    </script>
+</body>
+</html>
