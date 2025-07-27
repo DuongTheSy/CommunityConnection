@@ -7,7 +7,9 @@ using System.Collections.Generic;
 
 namespace CommunityConnection.Infrastructure.Repository
 {
-        public interface IGoalRepository
-        {
-        }
+    public interface IGoalRepository
+    {
+        Task<Goal> CreateGoalAsync(Goal goal);
+        Task<IEnumerable<Goal>> GetGoalsByUserIdAsync(long userId);
+    }
 }

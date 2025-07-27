@@ -1,55 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>SignalR Chat</title>
     <meta charset="UTF-8">
+    <title>Developer Chat</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f2f2f2;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            margin: 10px 0;
+            background-color: #fafafa;
+        }
+
+        #messageInput {
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .msg {
+            margin: 5px 0;
+        }
+
+            .msg strong {
+                color: #007bff;
+            }
+
+            .msg time {
+                font-size: 0.8em;
+                color: #999;
+            }
+
+        .room-info {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Phòng Chat</h2>
-    <input id="userName" placeholder="Tên bạn" />
-    <input id="roomName" placeholder="Tên phòng" />
-    <button id="joinRoom">Vào phòng</button>
-    <hr />
-    <div id="messages" style="border:1px solid #ccc; padding:10px; height:300px; overflow:auto;"></div>
-    <input id="messageInput" placeholder="Tin nhắn..." style="width: 100%;" />
+    <div class="chat-container">
+        <h2>Phòng Chat</h2>
+        <div class="room-info">Bạn đang chat với tên: <strong>Đào Anh Đức</strong> - Phòng: <strong>Developer</strong></div>
+        <div id="messages"></div>
+        <input id="messageInput" type="text" placeholder="Gõ tin nhắn và nhấn Enter..." />
+    </div>
 
     <script>
+
+        const userName = "Đào Anh Đức";
+        const roomName = "Developer";
+
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/chatHub")
             .withAutomaticReconnect()
             .build();
 
-        connection.start().catch(console.error);
+  
+        connection.start()
+            .then(() => {
+                setTimeout(() => {
+                    connection.invoke("JoinRoom", userName, roomName);
+                }, 3000)
+            })
+            .catch(console.error);
 
-        document.getElementById("joinRoom").addEventListener("click", function () {
-            const user = document.getElementById("userName").value;
-            const room = document.getElementById("roomName").value;
-            connection.invoke("JoinRoom", user, room);
-        });
-
+        // Gửi tin nhắn khi nhấn Enter
         document.getElementById("messageInput").addEventListener("keyup", function (e) {
             if (e.key === "Enter") {
-                const msg = e.target.value;
-                const room = document.getElementById("roomName").value;
-                connection.invoke("SendMessageToRoom", room, msg);
-                e.target.value = "";
+                const msg = e.target.value.trim();
+                if (msg !== "") {
+                    connection.invoke("SendMessageToRoom", roomName, msg);
+                    e.target.value = "";
+                }
             }
         });
 
+   
         connection.on("ReceiveMessage", function (msg) {
-            const messages = document.getElementById("messages");
-            messages.innerHTML += `<p><b>${msg.user}</b>: ${msg.text}</p>`;
-            messages.scrollTop = messages.scrollHeight;
+            appendMessage(msg.user, msg.text, new Date());
         });
 
-        connection.on("UserJoined", function (user) {
-            document.getElementById("messages").innerHTML += `<p><i>${user} đã tham gia phòng.</i></p>`;
-        });
+
+        //connection.on("UserJoined", function (user) {
+        //    appendSystemMessage(`${user} đã tham gia phòng.`);
+        //});
 
         connection.on("UserLeft", function (user) {
-            document.getElementById("messages").innerHTML += `<p><i>${user} đã rời phòng.</i></p>`;
+            appendSystemMessage(`${user} đã rời phòng.`);
         });
+
+        function appendMessage(user, text, time) {
+            const messages = document.getElementById("messages");
+            const p = document.createElement("p");
+            p.className = "msg";
+            p.innerHTML = `<strong>${user}</strong>: ${text} <time>${time.toLocaleTimeString()}</time>`;
+            messages.appendChild(p);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function appendSystemMessage(content) {
+            const messages = document.getElementById("messages");
+            const p = document.createElement("p");
+            p.innerHTML = `<i>${content}</i>`;
+            messages.appendChild(p);
+            messages.scrollTop = messages.scrollHeight;
+        }
+ 
+        fetch('http://localhost:5097/api/communities/1/channels/1/messages', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImR1b25ndGhlc3kiLCJyb2xlIjoiVXNlciIsIm5hbWVpZCI6IjEiLCJuYmYiOjE3NTM2NTAxNjIsImV4cCI6MTc1MzY1MTk2MiwiaWF0IjoxNzUzNjUwMTYyfQ.1p_E59MX2exAXPE2YaeKGhGmcgpKnF-5JuLCGeBpdzI',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === "true" && Array.isArray(result.data.messages)) {
+                    const fragment = document.createDocumentFragment();
+
+                    result.data.messages.forEach(msg => {
+                        const user = msg.senderName;
+                        const text = msg.message.content;
+                        const time = new Date(msg.message.sentAt);
+
+                        const p = document.createElement("p");
+                        p.className = "msg";
+                        p.innerHTML = `<strong>${user}</strong>: ${text} <time>${time.toLocaleTimeString()}</time>`;
+                        fragment.appendChild(p);
+                    });
+
+                    const messages = document.getElementById("messages");
+                    messages.appendChild(fragment);
+                    messages.scrollTop = messages.scrollHeight;
+                } else {
+                    console.warn("Không lấy được danh sách tin nhắn.");
+                }
+            })
+            .catch(err => console.error("Lỗi gọi API:", err));
+
     </script>
 </body>
 </html>

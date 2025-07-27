@@ -1,6 +1,8 @@
-﻿using CommunityConnection.Service;
+﻿using CommunityConnection.Common;
+using CommunityConnection.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CommunityConnection.WebApi.Controllers
 {
@@ -9,13 +11,14 @@ namespace CommunityConnection.WebApi.Controllers
     public class GoalController : ControllerBase
     {
         private readonly CallGeminiService _callGeminiService;
-
-        public GoalController(CallGeminiService callGeminiService)
+        private readonly IGoalService _service;
+        public GoalController(CallGeminiService callGeminiService, IGoalService service)
         {
             _callGeminiService = callGeminiService;
+            _service = service;
         }
 
-        [HttpPost("check-goal")]
+        [HttpGet("check-goal")]
         public async Task<IActionResult> CheckGoal(string goal)
         {
             if (string.IsNullOrEmpty(goal))
@@ -31,7 +34,7 @@ namespace CommunityConnection.WebApi.Controllers
 
             return Ok(result);
         }
-        [HttpPost("generate-roadmap")]
+        [HttpGet("generate-roadmap")]
         public async Task<IActionResult> GenerateRoadmap(string goal)
         {
             if (string.IsNullOrEmpty(goal))
@@ -47,7 +50,60 @@ namespace CommunityConnection.WebApi.Controllers
 
             return Ok(roadmap);
         }
-    
+        [HttpPost("create-goal")]
+        public async Task<IActionResult> CreateGoal([FromBody] CreateGoalDto model)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("Bạn chưa đăng nhập.");
+            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User ID not found in token.");
+            }
+            long idToken = long.Parse(userIdClaim.Value);
+            
+            GoalViewModel dto = new GoalViewModel
+            {
+                UserId = idToken,
+                GoalName = model.GoalName,
+                CompletionDate = model.CompletionDate,
+                Status = 0, // Mặc định là chưa hoàn thành
+                PriorityLevel = "Medium" // Mặc định là mức độ ưu tiên trung bình
+            };
+
+            var createdGoal = await _service.CreateGoalAsync(dto);
+            return Ok(new ApiResponse<GoalViewModel>
+            {
+                status = "true",
+                message = "Thêm mục tiêu thành công",
+                data = dto
+            });
+        }
+
+        [HttpGet("my-goals")]
+        public async Task<IActionResult> GetGoalsByToken()
+        {
+            if (!User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized("Bạn chưa đăng nhập.");
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized("Không tìm thấy User ID trong token.");
+
+            long userId = long.Parse(userIdClaim.Value);
+
+            var goals = await _service.GetGoalsByUserIdAsync(userId);
+
+            return Ok(new ApiResponse<IEnumerable<Goal>>
+            {
+                status = "true",
+                message = "Lấy danh sách mục tiêu thành công",
+                data = goals
+            });
+        }
     }
 }
+
