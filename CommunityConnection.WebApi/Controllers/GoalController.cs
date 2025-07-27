@@ -15,8 +15,8 @@ namespace CommunityConnection.WebApi.Controllers
             _callGeminiService = callGeminiService;
         }
 
-        [HttpGet("{goal}")]
-        public async Task<IActionResult> CheckGoal(string? goal)
+        [HttpPost("check-goal")]
+        public async Task<IActionResult> CheckGoal(string goal)
         {
             if (string.IsNullOrEmpty(goal))
             {
@@ -31,5 +31,23 @@ namespace CommunityConnection.WebApi.Controllers
 
             return Ok(result);
         }
+        [HttpPost("generate-roadmap")]
+        public async Task<IActionResult> GenerateRoadmap(string goal)
+        {
+            if (string.IsNullOrEmpty(goal))
+            {
+                return BadRequest("Bạn chưa nhập mục tiêu.");
+            }
+
+            var roadmap = await _callGeminiService.RoadmapService(goal);
+            if (roadmap == null)
+            {
+                return NotFound("Không thể tạo lộ trình cho mục tiêu.");
+            }
+
+            return Ok(roadmap);
+        }
+    
+
     }
 }
