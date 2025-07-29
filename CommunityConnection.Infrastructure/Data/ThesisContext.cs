@@ -45,6 +45,8 @@ public partial class ThesisContext : DbContext
 
     public virtual DbSet<Goal> Goals { get; set; }
 
+    public virtual DbSet<GoalNote> GoalNotes { get; set; }
+
     public virtual DbSet<JoinRequest> JoinRequests { get; set; }
 
     public virtual DbSet<LevelQuiz> LevelQuizzes { get; set; }
@@ -66,6 +68,10 @@ public partial class ThesisContext : DbContext
     public virtual DbSet<ReminderNotification> ReminderNotifications { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<SubGoal> SubGoals { get; set; }
+
+    public virtual DbSet<SubGoalActivity> SubGoalActivities { get; set; }
 
     public virtual DbSet<TextNote> TextNotes { get; set; }
 
@@ -481,6 +487,24 @@ public partial class ThesisContext : DbContext
                 .HasConstraintName("fk_goal_user");
         });
 
+        modelBuilder.Entity<GoalNote>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__goal_not__3213E83F6C257FDE");
+
+            entity.ToTable("goal_note");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.GoalId).HasColumnName("goal_id");
+            entity.Property(e => e.NoteText).HasColumnName("note_text");
+            entity.Property(e => e.OrderIndex)
+                .HasDefaultValue(0)
+                .HasColumnName("order_index");
+
+            entity.HasOne(d => d.Goal).WithMany(p => p.GoalNotes)
+                .HasForeignKey(d => d.GoalId)
+                .HasConstraintName("fk_goal_note");
+        });
+
         modelBuilder.Entity<JoinRequest>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__join_req__3213E83FDBD64109");
@@ -766,6 +790,51 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.RoleName)
                 .HasMaxLength(50)
                 .HasColumnName("role_name");
+        });
+
+        modelBuilder.Entity<SubGoal>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__sub_goal__3213E83F6AED79D7");
+
+            entity.ToTable("sub_goal");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CompletionDate)
+                .HasColumnType("datetime")
+                .HasColumnName("completion_date");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.GoalId).HasColumnName("goal_id");
+            entity.Property(e => e.OrderIndex)
+                .HasDefaultValue(0)
+                .HasColumnName("order_index");
+            entity.Property(e => e.Title)
+                .HasMaxLength(255)
+                .HasColumnName("title");
+
+            entity.HasOne(d => d.Goal).WithMany(p => p.SubGoals)
+                .HasForeignKey(d => d.GoalId)
+                .HasConstraintName("fk_sub_goal");
+        });
+
+        modelBuilder.Entity<SubGoalActivity>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__sub_goal__3213E83F51BE4D81");
+
+            entity.ToTable("sub_goal_activity");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Activity).HasColumnName("activity");
+            entity.Property(e => e.IsCompleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_completed");
+            entity.Property(e => e.OrderIndex)
+                .HasDefaultValue(0)
+                .HasColumnName("order_index");
+            entity.Property(e => e.SubGoalId).HasColumnName("sub_goal_id");
+
+            entity.HasOne(d => d.SubGoal).WithMany(p => p.SubGoalActivities)
+                .HasForeignKey(d => d.SubGoalId)
+                .HasConstraintName("fk_activity_sub_goal");
         });
 
         modelBuilder.Entity<TextNote>(entity =>

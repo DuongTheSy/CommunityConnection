@@ -14,7 +14,7 @@
 
     }
 
-    public class FailedStatusResponse
+    public class StatusResponse
     {
         public bool status { get; set; }
         public string message { get; set; }

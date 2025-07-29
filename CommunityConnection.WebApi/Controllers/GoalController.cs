@@ -23,11 +23,11 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (string.IsNullOrEmpty(goal))
             {
-                return BadRequest(new ApiResponse<FailedStatusResponse>
+                return BadRequest(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Bạn chưa nhập mục tiêu"
@@ -39,11 +39,11 @@ namespace CommunityConnection.WebApi.Controllers
             var result = await _callGeminiService.EvaluateGoals(goal);
             if (result == null)
             {
-                return NotFound(new ApiResponse<FailedStatusResponse>
+                return NotFound(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Không xác định được mục tiêu"
@@ -59,11 +59,11 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (string.IsNullOrEmpty(goal))
             {
-                return BadRequest(new ApiResponse<FailedStatusResponse>
+                return BadRequest(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Bạn chưa nhập mục tiêu"
@@ -75,11 +75,11 @@ namespace CommunityConnection.WebApi.Controllers
             var roadmap = await _callGeminiService.RoadmapService(goal);
             if (roadmap == null)
             {
-                return NotFound(new ApiResponse<FailedStatusResponse>
+                return NotFound(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Không thể tạo lộ trình cho mục tiêu"
@@ -95,11 +95,11 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Bạn cần đăng nhập"
@@ -111,11 +111,11 @@ namespace CommunityConnection.WebApi.Controllers
 
             if (userIdClaim == null)
             {
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Kiểm tra lại Token"
@@ -148,11 +148,11 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity?.IsAuthenticated ?? false)
             {
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Bạn cần đăng nhập"
@@ -164,11 +164,11 @@ namespace CommunityConnection.WebApi.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Kiểm tra lại Token"
@@ -193,11 +193,11 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity?.IsAuthenticated ?? false)
             {
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Bạn cần đăng nhập"
@@ -208,11 +208,11 @@ namespace CommunityConnection.WebApi.Controllers
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Kiểm tra lại Token"
@@ -244,11 +244,11 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity?.IsAuthenticated ?? false)
             {
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Bạn cần đăng nhập"
@@ -260,11 +260,11 @@ namespace CommunityConnection.WebApi.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Kiểm tra lại Token"

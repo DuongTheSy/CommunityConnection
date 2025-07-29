@@ -29,4 +29,8 @@
     <ProjectReference Include="..\CommunityConnection.Service\CommunityConnection.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+
 </Project>

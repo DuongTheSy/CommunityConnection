@@ -11,15 +11,16 @@ namespace CommunityConnection.Common
 
         public string goal { get; set; } = string.Empty;
 
-        public List<SubGoal> subGoals { get; set; } = new List<SubGoal>();
+        public List<SubGoalWithActivitiesResponse> subGoals { get; set; } = new List<SubGoalWithActivitiesResponse>();
         public List<string> Notes { get; set; }
     }
 
-    public class SubGoal
+    public class SubGoalWithActivitiesResponse
     {
-        public string title { get; set; } = string.Empty;
-        public int expectedDays { get; set; }
-        public string description { get; set; } = string.Empty;
-        public List<string> activities { get; set; } = new List<string>();
+        public string Title { get; set; } = null!;
+        public string? Description { get; set; }
+        public DateTime? ExpectedDays { get; set; }
+        public int OrderIndex { get; set; } = 0;
+        public List<string> Activities { get; set; } = new List<string>();
     }
 }

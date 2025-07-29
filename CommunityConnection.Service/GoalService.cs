@@ -44,11 +44,15 @@ namespace CommunityConnection.Service
             if (existingGoal == null || existingGoal.UserId != userId)
                 return null;
 
+            if(dto.Description != null)
+                existingGoal.Description = dto.Description;
+            if(dto.Status != null)
+                existingGoal.Status = dto.Status;
+            if(dto.PriorityLevel != null)
+                existingGoal.PriorityLevel = dto.PriorityLevel;
+
             existingGoal.GoalName = dto.GoalName;
-            existingGoal.Description = dto.Description;
             existingGoal.CompletionDate = dto.CompletionDate;
-            existingGoal.Status = dto.Status;
-            existingGoal.PriorityLevel = dto.PriorityLevel;
 
             await _repository.UpdateGoal(existingGoal);
 

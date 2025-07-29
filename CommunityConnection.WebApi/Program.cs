@@ -54,6 +54,8 @@ namespace CommunityConnection.WebApi
             builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
             builder.Services.AddScoped<IGoalRepository, GoalRepository>();
             builder.Services.AddScoped<IGoalService, GoalService>();
+            builder.Services.AddScoped<ISubGoalRepository, SubGoalRepository>();
+            builder.Services.AddScoped<ISubGoalService, SubGoalService>();
 
             var app = builder.Build();
             app.UseDefaultFiles();

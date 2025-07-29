@@ -1,5 +1,6 @@
 ﻿using Azure;
 using CommunityConnection.Common;
+using CommunityConnection.Entities.DTO;
 using CommunityConnection.Infrastructure.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -78,11 +79,12 @@ namespace CommunityConnection.Service
                           ""goal"": ""mục tiêu tổng thể"",
                           ""subGoals"": [
                             {{
+                              ""orderIndex"" : số thứ tự của giai đoạn (số nguyên, bắt đầu từ 1),
                               ""title"": ""tiêu đề giai đoạn"",
                               ""expectedDays"": số ngày dự kiến hoàn thành (số nguyên),
                               ""description"": ""mô tả ngắn về giai đoạn"",
                               ""activities"": [
-                                ""các hoạt động cụ thể""
+                                ""các hoạt động cụ thể kèm theo cách thực hiện""
                               ]
                             }}
                           ],
@@ -116,13 +118,14 @@ namespace CommunityConnection.Service
                     data = new RoadmapResponse
                     {
                         goal = parsed["goal"]?.ToString() ?? string.Empty,
-                        subGoals = parsed["subGoals"]?.Select(subGoal => new SubGoal
+                        subGoals = parsed["subGoals"]?.Select(subGoal => new SubGoalWithActivitiesResponse
                         {
-                            title = subGoal["title"]?.ToString() ?? string.Empty,
-                            expectedDays = subGoal["expectedDays"]?.Value<int>() ?? 0,
-                            description = subGoal["description"]?.ToString() ?? string.Empty,
-                            activities = subGoal["activities"]?.Select(a => a.ToString()).ToList() ?? new List<string>()
-                        }).ToList() ?? new List<SubGoal>(),
+                            OrderIndex = subGoal["orderIndex"]?.Value<int>() ?? 0,
+                            Title = subGoal["title"]?.ToString() ?? string.Empty,
+                            ExpectedDays = DateTime.Now.AddDays(subGoal["expectedDays"]?.Value<int>() ?? 0),
+                            Description = subGoal["description"]?.ToString() ?? string.Empty,
+                            Activities = subGoal["activities"]?.Select(a => a.ToString()).ToList() ?? new List<string>()
+                        }).ToList() ?? new List<SubGoalWithActivitiesResponse>(),
                         Notes = parsed["notes"]?.Select(note => note.ToString()).ToList() ?? new List<string>()
                     }
                 };

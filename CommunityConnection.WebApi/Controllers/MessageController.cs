@@ -22,11 +22,11 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity?.IsAuthenticated ?? false)
             {
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Bạn cần đăng nhập"
@@ -37,11 +37,11 @@ namespace CommunityConnection.WebApi.Controllers
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
-                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                return Unauthorized(new ApiResponse<StatusResponse>
                 {
                     status = true,
                     message = "Thành công",
-                    data = new FailedStatusResponse
+                    data = new StatusResponse
                     {
                         status = false,
                         message = "Kiểm tra lại Token"
