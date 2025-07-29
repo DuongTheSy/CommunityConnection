@@ -23,7 +23,7 @@ namespace CommunityConnection.Service
                 var messages = await _repository.GetMessagesAsync(userId, communityId, channelId);
                 return new ApiResponse<MessageChannelResponse>
                 {
-                    status = "true",
+                    status = true,
                     message = "Thành công",
                     data = new MessageChannelResponse
                     {
@@ -37,7 +37,7 @@ namespace CommunityConnection.Service
             {
                 return new ApiResponse<MessageChannelResponse>
                 {
-                    status = "false",
+                    status = false,
                     message = ex + "",
                 };
             }

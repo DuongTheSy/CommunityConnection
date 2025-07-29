@@ -27,7 +27,7 @@ namespace CommunityConnection.Service
                 var list_communities = await _repository.GetUserCommunitiesAsync(userId);
                 return new ApiResponse<ListCommunityResponse>
                 {
-                    status = "true",
+                    status = true,
                     message = "Thành công",
                     data = list_communities
                 };
@@ -36,7 +36,7 @@ namespace CommunityConnection.Service
             {
                 return new ApiResponse<ListCommunityResponse>
                 {
-                    status = "false",
+                    status = false,
                     message = ex + "",
                 };
             }

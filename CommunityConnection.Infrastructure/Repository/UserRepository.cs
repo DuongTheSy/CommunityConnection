@@ -41,7 +41,7 @@ namespace CommunityConnection.Infrastructure.Repository
             var user = _db.Users.FirstOrDefault(u => u.Username == loginModel.UserName && u.Password == loginModel.Password);
             if (user == null)
             {
-                return string.Empty; 
+                return null; 
             }
             // Giả sử bạn có một phương thức để tạo token
             var jwtHelper = new JwtHelper();

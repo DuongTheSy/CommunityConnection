@@ -77,7 +77,7 @@ namespace CommunityConnection.WebApi.Controllers
             var createdGoal = await _service.CreateGoalAsync(dto);
             return Ok(new ApiResponse<GoalViewModel>
             {
-                status = "true",
+                status = true,
                 message = "Thêm mục tiêu thành công",
                 data = dto
             });
@@ -99,7 +99,7 @@ namespace CommunityConnection.WebApi.Controllers
 
             return Ok(new ApiResponse<IEnumerable<Goal>>
             {
-                status = "true",
+                status = true,
                 message = "Lấy danh sách mục tiêu thành công",
                 data = goals
             });
@@ -121,13 +121,13 @@ namespace CommunityConnection.WebApi.Controllers
             if (result == null)
                 return NotFound(new ApiResponse<string>
                 {
-                    status = "false",
+                    status = false,
                     message = "Không tìm thấy mục tiêu cần cập nhật."
                 });
 
             return Ok(new ApiResponse<Goal>
             {
-                status = "true",
+                status = true,
                 message = "Cập nhật mục tiêu thành công",
                 data = result
             });
@@ -151,14 +151,14 @@ namespace CommunityConnection.WebApi.Controllers
             {
                 return NotFound(new ApiResponse<string>
                 {
-                    status = "false",
+                    status = false,
                     message = "Không tìm thấy mục tiêu."
                 });
             }
 
             return Ok(new ApiResponse<string>
             {
-                status = "true",
+                status = true,
                 message = "Xoá mục tiêu thành công (đã đánh dấu Status = 0)"
             });
         }

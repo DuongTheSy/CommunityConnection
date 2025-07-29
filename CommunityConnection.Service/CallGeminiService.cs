@@ -30,7 +30,7 @@ namespace CommunityConnection.Service
             {
                 return new ApiResponse<CheckGoalResponse>
                 {
-                    status = "false",
+                    status = false,
                     message = errorMessage
                 };
             }
@@ -42,11 +42,11 @@ namespace CommunityConnection.Service
 
                 return new ApiResponse<CheckGoalResponse>
                 {
-                    status = "true",
+                    status = true,
                     message = "Thành công",
                     data = new CheckGoalResponse
                     {
-                        status = parsed["status"]?.ToString() ?? "false",
+                        status = parsed["status"]?.ToString() == "true" ? true : false,
                         result = parsed["result"]?.ToString()
                     }
                 };
@@ -55,7 +55,7 @@ namespace CommunityConnection.Service
             {
                 return new ApiResponse<CheckGoalResponse>
                 {
-                    status = "false",
+                    status = false,
                     message = "Phản hồi không hợp lệ từ Gemini."
                 };
             }
@@ -96,7 +96,7 @@ namespace CommunityConnection.Service
             {
                 return new ApiResponse<RoadmapResponse>
                 {
-                    status = "false",
+                    status = false,
                     message = errorMessage
                 };
             }
@@ -108,7 +108,7 @@ namespace CommunityConnection.Service
 
                 return new ApiResponse<RoadmapResponse>
                 {
-                    status = "true",
+                    status = true,
                     message = "Thành công",
                     data = new RoadmapResponse
                     {
@@ -128,7 +128,7 @@ namespace CommunityConnection.Service
             {
                 return new ApiResponse<RoadmapResponse>
                 {
-                    status = "false",
+                    status = false,
                     message = "Phản hồi không hợp lệ từ Gemini."
                 };
             }

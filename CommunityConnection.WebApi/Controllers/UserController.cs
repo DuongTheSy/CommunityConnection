@@ -38,7 +38,7 @@ namespace CommunityConnection.WebApi.Controllers
                 //}
                 return Ok(new ApiResponse<string>
                 {
-                    status = "true",
+                    status = true,
                     message = "Thành công",
                     data = jwtToken
                 });
@@ -47,7 +47,7 @@ namespace CommunityConnection.WebApi.Controllers
             {
                 return Ok(new ApiResponse<string>
                 {
-                    status = "false",
+                    status = false,
                     message = ex.Message,
                 });
             }
@@ -97,7 +97,7 @@ namespace CommunityConnection.WebApi.Controllers
             var channels = await _communityService.GetChannelsForUserAsync(idToken, communityId);
             return Ok(new ApiResponse<ListChannelResponse>
             {
-                status = "true",
+                status = true,
                 message = "Lấy danh sách kênh thành công",
                 data = channels
             });
