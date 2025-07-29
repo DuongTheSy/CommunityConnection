@@ -28,10 +28,11 @@ namespace CommunityConnection.Service
             var (result, errorMessage) = await GetGeminiResponse(text);
             if (errorMessage != null)
             {
+                Console.WriteLine(errorMessage);
                 return new ApiResponse<CheckGoalResponse>
                 {
-                    status = false,
-                    message = errorMessage
+                    status = true,
+                    message = "Thành công"
                 };
             }
 
@@ -51,12 +52,13 @@ namespace CommunityConnection.Service
                     }
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return new ApiResponse<CheckGoalResponse>
                 {
-                    status = false,
-                    message = "Phản hồi không hợp lệ từ Gemini."
+                    status = true,
+                    message = "Thành công"
                 };
             }
         }
@@ -94,10 +96,11 @@ namespace CommunityConnection.Service
             var (result, errorMessage) = await GetGeminiResponse(text);
             if (errorMessage != null)
             {
+                Console.WriteLine(errorMessage);
                 return new ApiResponse<RoadmapResponse>
                 {
-                    status = false,
-                    message = errorMessage
+                    status = true,
+                    message = "Thành công",
                 };
             }
 
@@ -124,12 +127,13 @@ namespace CommunityConnection.Service
                     }
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return new ApiResponse<RoadmapResponse>
                 {
-                    status = false,
-                    message = "Phản hồi không hợp lệ từ Gemini."
+                    status = true,
+                    message = "Thành công"
                 };
             }
         }

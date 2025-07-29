@@ -58,7 +58,17 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity.IsAuthenticated || !User.IsInRole("Admin"))
             {
-                return Unauthorized("Chỉ admin mới vào được.");
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Chỉ admin mới có quyền xem"
+
+                    }
+                });
             }
             var users = _userService.GetAllUsers();
             return Ok(users);
@@ -68,13 +78,33 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return Unauthorized("Bạn chưa đăng nhập.");
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Bạn cần đăng nhập"
+
+                    }
+                });
             }
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
             {
-                return Unauthorized("User ID not found in token.");
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Kiểm tra lại Token"
+
+                    }
+                });
             }
             long idToken = long.Parse(userIdClaim.Value);
             var result = await _communityService.GetUserCommunities(idToken);
@@ -85,13 +115,33 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return Unauthorized("Bạn chưa đăng nhập.");
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Bạn cần đăng nhập"
+
+                    }
+                });
             }
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
             {
-                return Unauthorized("User ID not found in token.");
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Kiểm tra lại Token"
+
+                    }
+                });
             }
             long idToken = long.Parse(userIdClaim.Value);
             var channels = await _communityService.GetChannelsForUserAsync(idToken, communityId);
@@ -101,7 +151,6 @@ namespace CommunityConnection.WebApi.Controllers
                 message = "Lấy danh sách kênh thành công",
                 data = channels
             });
-        }
-
+        } 
     }
 }

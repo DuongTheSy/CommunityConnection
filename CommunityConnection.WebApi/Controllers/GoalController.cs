@@ -23,13 +23,33 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (string.IsNullOrEmpty(goal))
             {
-                return BadRequest("Bạn chưa nhập mục tiêu.");
+                return BadRequest(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Bạn chưa nhập mục tiêu"
+
+                    }
+                });
             }
 
             var result = await _callGeminiService.EvaluateGoals(goal);
             if (result == null)
             {
-                return NotFound("Không xác định được mục tiêu.");
+                return NotFound(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Không xác định được mục tiêu"
+
+                    }
+                });
             }
 
             return Ok(result);
@@ -39,13 +59,33 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (string.IsNullOrEmpty(goal))
             {
-                return BadRequest("Bạn chưa nhập mục tiêu.");
+                return BadRequest(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Bạn chưa nhập mục tiêu"
+
+                    }
+                });
             }
 
             var roadmap = await _callGeminiService.RoadmapService(goal);
             if (roadmap == null)
             {
-                return NotFound("Không thể tạo lộ trình cho mục tiêu.");
+                return NotFound(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Không thể tạo lộ trình cho mục tiêu"
+
+                    }
+                });
             }
 
             return Ok(roadmap);
@@ -55,13 +95,33 @@ namespace CommunityConnection.WebApi.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return Unauthorized("Bạn chưa đăng nhập.");
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Bạn cần đăng nhập"
+
+                    }
+                });
             }
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
             {
-                return Unauthorized("User ID not found in token.");
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Kiểm tra lại Token"
+
+                    }
+                });
             }
             long idToken = long.Parse(userIdClaim.Value);
             
@@ -70,7 +130,7 @@ namespace CommunityConnection.WebApi.Controllers
                 UserId = idToken,
                 GoalName = model.GoalName,
                 CompletionDate = model.CompletionDate,
-                Status = 1, // Mặc định là chưa hoàn thành
+                Status = 1, 
                 PriorityLevel = "Medium" // Mặc định là mức độ ưu tiên trung bình
             };
 
@@ -87,11 +147,35 @@ namespace CommunityConnection.WebApi.Controllers
         public async Task<IActionResult> GetGoalsByToken()
         {
             if (!User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized("Bạn chưa đăng nhập.");
+            {
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Bạn cần đăng nhập"
+
+                    }
+                });
+            }
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
-                return Unauthorized("Không tìm thấy User ID trong token.");
+            {
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Kiểm tra lại Token"
+
+                    }
+                });
+            }
 
             long userId = long.Parse(userIdClaim.Value);
 
@@ -108,11 +192,33 @@ namespace CommunityConnection.WebApi.Controllers
         public async Task<IActionResult> UpdateGoal([FromBody] UpdateGoalDto dto)
         {
             if (!User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized("Bạn chưa đăng nhập.");
+            {
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Bạn cần đăng nhập"
+
+                    }
+                });
+            }
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
-                return Unauthorized("Không tìm thấy User ID trong token.");
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Kiểm tra lại Token"
+
+                    }
+                });
 
             long userId = long.Parse(userIdClaim.Value);
 
@@ -137,11 +243,35 @@ namespace CommunityConnection.WebApi.Controllers
         public async Task<IActionResult> SoftDeleteGoal(long goalId)
         {
             if (!User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized("Bạn chưa đăng nhập.");
+            {
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Bạn cần đăng nhập"
+
+                    }
+                });
+            }
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
-                return Unauthorized("Không tìm thấy User ID trong token.");
+            {
+                return Unauthorized(new ApiResponse<FailedStatusResponse>
+                {
+                    status = true,
+                    message = "Thành công",
+                    data = new FailedStatusResponse
+                    {
+                        status = false,
+                        message = "Kiểm tra lại Token"
+
+                    }
+                });
+            }
 
             long userId = long.Parse(userIdClaim.Value);
 

@@ -13,4 +13,10 @@
         public string? result { get; set; }
 
     }
+
+    public class FailedStatusResponse
+    {
+        public bool status { get; set; }
+        public string message { get; set; }
+    }
 }
