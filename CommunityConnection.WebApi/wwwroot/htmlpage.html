@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Community Chat Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+</head>
+<body class="container py-4">
+
+    <!-- Đăng nhập -->
+    <div id="loginForm">
+        <h3>Đăng nhập</h3>
+        <div class="mb-3">
+            <label class="form-label">Tên đăng nhập</label>
+            <input type="text" class="form-control" id="username">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" class="form-control" id="password">
+        </div>
+        <button class="btn btn-primary" onclick="login()">Đăng nhập</button>
+    </div>
+
+    <!-- Chọn cộng đồng -->
+    <div id="communitySelect" style="display: none;">
+        <h4>Chọn cộng đồng</h4>
+        <select id="communityDropdown" class="form-select mb-2"></select>
+        <button class="btn btn-success" onclick="selectCommunity()">Tiếp tục</button>
+    </div>
+
+    <!-- Chọn kênh -->
+    <div id="channelSelect" style="display: none;">
+        <h4>Chọn kênh</h4>
+        <select id="channelDropdown" class="form-select mb-2"></select>
+        <button class="btn btn-success" onclick="selectChannel()">Vào phòng chat</button>
+    </div>
+
+    <!-- Phòng chat -->
+    <div id="chatSection" class="mt-4" style="display: none;">
+        <h4>Phòng Chat: <span id="roomInfo"></span></h4>
+        <div id="messages" style="border:1px solid #ccc; padding:10px; height:300px; overflow:auto;"></div>
+        <input id="messageInput" placeholder="Tin nhắn..." class="form-control mt-2">
+    </div>
+
+    <script>
+        let currentUser = null;
+        let connection = null;
+
+        const users = [
+            { username: "duongthesy", password: "123456", name: "Dương Thế Sỹ" },
+            { username: "daoanhduc", password: "123456", name: "Đào Anh Đức" }
+        ];
+
+        const communities = [
+            { id: "1", name: "Cộng đồng lập trình" },
+            { id: "2", name: "Cộng đồng học toán" }
+        ];
+
+        const channels = {
+            "1": [{ id: "1", name: "C# cơ bản" }, { id: "2", name: "ASP.NET nâng cao" }],
+            "2": [{ id: "3", name: "Toán 12" }, { id: "4", name: "Toán đại học" }]
+        };
+
+        const fakeToken = user => {
+            const payload = {
+                name: user.name,
+                sub: user.username
+            };
+            const base64Payload = btoa(JSON.stringify(payload));
+            return `header.${base64Payload}.signature`;
+        };
+
+        function getNameFromToken(token) {
+            const payloadBase64 = token.split('.')[1];
+            const payload = JSON.parse(atob(payloadBase64));
+            return payload.name;
+        }
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const user = users.find(u => u.username === username && u.password === password);
+            if (!user) {
+                alert("Tài khoản không hợp lệ!");
+                return;
+            }
+
+            currentUser = {
+                name: user.name,
+                token: fakeToken(user),
+                communityId: null,
+                channelId: null
+            };
+
+            // Ẩn form login, hiện form chọn cộng đồng
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("communitySelect").style.display = "block";
+
+            // Hiển thị danh sách cộng đồng
+            const dropdown = document.getElementById("communityDropdown");
+            dropdown.innerHTML = communities.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        }
+
+        function selectCommunity() {
+            const selectedCommunityId = document.getElementById("communityDropdown").value;
+            currentUser.communityId = selectedCommunityId;
+
+            document.getElementById("communitySelect").style.display = "none";
+            document.getElementById("channelSelect").style.display = "block";
+
+            const chList = channels[selectedCommunityId] || [];
+            const dropdown = document.getElementById("channelDropdown");
+            dropdown.innerHTML = chList.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        }
+
+        async function selectChannel() {
+            const selectedChannelId = document.getElementById("channelDropdown").value;
+            currentUser.channelId = selectedChannelId;
+
+            document.getElementById("channelSelect").style.display = "none";
+            document.getElementById("chatSection").style.display = "block";
+
+            const communityName = communities.find(c => c.id === currentUser.communityId)?.name;
+            const channelName = channels[currentUser.communityId].find(c => c.id === selectedChannelId)?.name;
+
+            document.getElementById("roomInfo").innerText = `${communityName} - ${channelName}`;
+            await connectSignalR();
+        }
+
+        async function connectSignalR() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("http://localhost:5097/chatHub", {
+                    accessTokenFactory: () => currentUser.token
+                })
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("ReceiveMessage", function (user, message) {
+                const messages = document.getElementById("messages");
+                messages.innerHTML += `<p><b>${user}</b>: ${message}</p>`;
+                messages.scrollTop = messages.scrollHeight;
+            });
+
+            connection.on("UserJoined", function (user) {
+                document.getElementById("messages").innerHTML += `<p><i>${user} đã tham gia phòng.</i></p>`;
+            });
+
+            connection.on("UserLeft", function (user) {
+                document.getElementById("messages").innerHTML += `<p><i>${user} đã rời phòng.</i></p>`;
+            });
+
+            await connection.start();
+            await connection.invoke("JoinRoom", currentUser.name, currentUser.channelId);
+        }
+
+        // Gửi tin nhắn khi nhấn Enter
+        document.getElementById("messageInput").addEventListener("keyup", function (e) {
+            if (e.key === "Enter" && connection) {
+                const msg = e.target.value.trim();
+                if (!msg) return;
+                connection.invoke("SendMessageToRoom", currentUser.channelId, msg);
+                e.target.value = "";
+            }
+        });
+    </script>
+</body>
+</html>

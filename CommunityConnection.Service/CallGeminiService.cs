@@ -21,7 +21,7 @@ namespace CommunityConnection.Service
 
         public async Task<ApiResponse<CheckGoalResponse>> EvaluateGoals(string goal)
         {
-            var text = $"Mục tiêu học \"{goal}\" đã  đúng theo format 'Tôi sẽ hoàn thành cái gì trong bao nhiêu ngày' chưa\r\n" +
+            var text = $"Mục tiêu (học) \"{goal}\" đã  đúng theo format 'Tôi sẽ hoàn thành cái gì trong bao nhiêu ngày' chưa\r\n" +
                    $"Nếu chưa đạt hãy nói\r\n\"status\" : \"false\",\r\n\"result\" : đưa ra đề xuất hoàn thành cái gì trong bao nhiêu ngày cụ thể và không cần giải thích\r\nN" +
                    $"Nếu đạt rồi hãy nói\r\n\"status\" : \"true\",\r\n\"result\" : \"null\"\r\n" +
                    $"cấm trả lời thừa";

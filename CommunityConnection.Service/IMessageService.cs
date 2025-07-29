@@ -9,6 +9,6 @@ namespace CommunityConnection.Service
 {
     public interface IMessageService
     {
-        Task<ApiResponse<MessageChannelResponse>> GetMessagesAsync(int communityId, int channelId);
+        Task<ApiResponse<MessageChannelResponse>> GetMessagesAsync(long userId,int communityId, int channelId);
     }
 }

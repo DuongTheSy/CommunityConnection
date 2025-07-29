@@ -9,7 +9,10 @@ namespace CommunityConnection.Infrastructure.Repository
 {
     public interface IGoalRepository
     {
-        Task<Goal> CreateGoalAsync(Goal goal);
-        Task<IEnumerable<Goal>> GetGoalsByUserIdAsync(long userId);
+        Task<Goal> CreateGoal(Goal goal);
+        Task<IEnumerable<Goal>> GetGoalsByUserId(long userId);
+        Task<Goal?> GetGoalById(long goalId);
+        Task UpdateGoal(Goal goal); // cập nhật goal và xóa mềm
+
     }
 }

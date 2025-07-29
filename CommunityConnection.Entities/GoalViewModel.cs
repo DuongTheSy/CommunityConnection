@@ -20,4 +20,13 @@ namespace CommunityConnection.Entities
         public string GoalName { get; set; } = null!;
         public DateTime? CompletionDate { get; set; }
     }
+    public class UpdateGoalDto
+    {
+        public long Id { get; set; } // Id của goal cần sửa
+        public string GoalName { get; set; } = null!;
+        public string? Description { get; set; }
+        public DateTime? CompletionDate { get; set; }
+        public int? Status { get; set; }
+        public string? PriorityLevel { get; set; }
+    }
 }

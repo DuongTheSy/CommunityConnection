@@ -33,6 +33,7 @@ namespace CommunityConnection.WebApi
             //    });
             //});
 
+
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
@@ -53,10 +54,12 @@ namespace CommunityConnection.WebApi
             builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
             builder.Services.AddScoped<IGoalRepository, GoalRepository>();
             builder.Services.AddScoped<IGoalService, GoalService>();
+
             var app = builder.Build();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCors();
+            app.UseCors("AllowWebClient");
             app.MapHub<ChatHub>("/chatHub");
 
             //app.UseCors("AllowAll");

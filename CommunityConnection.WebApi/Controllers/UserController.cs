@@ -29,39 +29,27 @@ namespace CommunityConnection.WebApi.Controllers
             try
             {
                 string jwtToken = _userService.Login(model);
+                //if(jwtToken != null) {
+                //    return Ok(new ApiResponse<string>
+                //    {
+                //        status = "true",
+                //        message = "Thành công"
+                //    });
+                //}
                 return Ok(new ApiResponse<string>
                 {
                     status = "true",
-                    message = "Authenticate success",
+                    message = "Thành công",
                     data = jwtToken
                 });
             }
-            catch
+            catch(Exception ex)
             {
                 return Ok(new ApiResponse<string>
                 {
                     status = "false",
-                    message = "Invalid username/password"
+                    message = ex.Message,
                 });
-
-                //var user = _context.NguoiDungs.SingleOrDefault(p => p.UserName == model.UserName && model.Password == p.Password);
-                //if (user == null) //không đúng
-                //{
-                //    return Ok(new ApiResponse<string>
-                //    {
-                //        status = "false",
-                //        message = "Invalid username/password"
-                //    });
-                //}
-
-                ////cấp token
-
-                //return Ok(new ApiResponse<string>
-                //{
-                //    status = "true",
-                //    message = "Authenticate success",
-                //    data = _jwtHelper.GenerateToken(user,)
-                //});
             }
         }
 

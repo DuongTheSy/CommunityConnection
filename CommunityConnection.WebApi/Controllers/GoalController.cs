@@ -70,7 +70,7 @@ namespace CommunityConnection.WebApi.Controllers
                 UserId = idToken,
                 GoalName = model.GoalName,
                 CompletionDate = model.CompletionDate,
-                Status = 0, // Mặc định là chưa hoàn thành
+                Status = 1, // Mặc định là chưa hoàn thành
                 PriorityLevel = "Medium" // Mặc định là mức độ ưu tiên trung bình
             };
 
@@ -95,7 +95,7 @@ namespace CommunityConnection.WebApi.Controllers
 
             long userId = long.Parse(userIdClaim.Value);
 
-            var goals = await _service.GetGoalsByUserIdAsync(userId);
+            var goals = await _service.GetGoalsByUser(userId);
 
             return Ok(new ApiResponse<IEnumerable<Goal>>
             {
@@ -104,6 +104,65 @@ namespace CommunityConnection.WebApi.Controllers
                 data = goals
             });
         }
+        [HttpPut("update-goal")]
+        public async Task<IActionResult> UpdateGoal([FromBody] UpdateGoalDto dto)
+        {
+            if (!User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized("Bạn chưa đăng nhập.");
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized("Không tìm thấy User ID trong token.");
+
+            long userId = long.Parse(userIdClaim.Value);
+
+            var result = await _service.UpdateGoal(userId, dto);
+
+            if (result == null)
+                return NotFound(new ApiResponse<string>
+                {
+                    status = "false",
+                    message = "Không tìm thấy mục tiêu cần cập nhật."
+                });
+
+            return Ok(new ApiResponse<Goal>
+            {
+                status = "true",
+                message = "Cập nhật mục tiêu thành công",
+                data = result
+            });
+        }
+
+        [HttpPut("delete-goal/{goalId}")]
+        public async Task<IActionResult> SoftDeleteGoal(long goalId)
+        {
+            if (!User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized("Bạn chưa đăng nhập.");
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized("Không tìm thấy User ID trong token.");
+
+            long userId = long.Parse(userIdClaim.Value);
+
+            var success = await _service.SoftDeleteGoal(userId, goalId);
+
+            if (!success)
+            {
+                return NotFound(new ApiResponse<string>
+                {
+                    status = "false",
+                    message = "Không tìm thấy mục tiêu."
+                });
+            }
+
+            return Ok(new ApiResponse<string>
+            {
+                status = "true",
+                message = "Xoá mục tiêu thành công (đã đánh dấu Status = 0)"
+            });
+        }
+
     }
 }
 

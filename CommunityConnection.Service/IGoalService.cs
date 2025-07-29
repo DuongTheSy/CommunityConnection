@@ -11,6 +11,10 @@ namespace CommunityConnection.Service
     public interface IGoalService
     {
         Task<Goal> CreateGoalAsync(GoalViewModel dto);
-        Task<IEnumerable<Goal>> GetGoalsByUserIdAsync(long userId);
+        Task<IEnumerable<Goal>> GetGoalsByUser(long userId);
+        Task<Goal?> UpdateGoal(long userId, UpdateGoalDto dto);
+        Task<bool> SoftDeleteGoal(long userId, long goalId);
+
+
     }
 }

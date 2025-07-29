@@ -18,18 +18,29 @@ namespace CommunityConnection.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<Goal> CreateGoalAsync(Goal goal)
+        public async Task<Goal> CreateGoal(Goal goal)
         {
             _context.Goals.Add(goal);
             await _context.SaveChangesAsync();
             return goal;
         }
-        public async Task<IEnumerable<Goal>> GetGoalsByUserIdAsync(long userId)
+        public async Task<IEnumerable<Goal>> GetGoalsByUserId(long userId)
         {
             return await _context.Goals
-                .Where(g => g.UserId == userId)
+                .Where(g => g.UserId == userId && g.Status != 0)
                 .ToListAsync();
         }
+        public async Task<Goal?> GetGoalById(long goalId)
+        {
+            return await _context.Goals.FindAsync(goalId);
+        }
+
+        public async Task UpdateGoal(Goal goal)
+        {
+            _context.Goals.Update(goal);
+            await _context.SaveChangesAsync();
+        }
+
 
     }
 }

@@ -16,17 +16,19 @@ namespace CommunityConnection.Service
         {
             _repository = repository;
         }
-        public async Task<ApiResponse<MessageChannelResponse>> GetMessagesAsync(int communityId, int channelId)
+        public async Task<ApiResponse<MessageChannelResponse>> GetMessagesAsync(long userId,int communityId, int channelId)
         {
             try
             {
-                var messages = await _repository.GetMessagesAsync(communityId, channelId);
+                var messages = await _repository.GetMessagesAsync(userId, communityId, channelId);
                 return new ApiResponse<MessageChannelResponse>
                 {
                     status = "true",
                     message = "Thành công",
                     data = new MessageChannelResponse
                     {
+                        CommunityId = communityId,
+                        ChannelId = channelId,
                         Messages = messages
                     }
                 };

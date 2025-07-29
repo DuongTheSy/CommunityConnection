@@ -31,11 +31,43 @@ namespace CommunityConnection.Service
                 PriorityLevel = dto.PriorityLevel
             };
 
-            return await _repository.CreateGoalAsync(goal);
+            return await _repository.CreateGoal(goal);
         }
-        public async Task<IEnumerable<Goal>> GetGoalsByUserIdAsync(long userId)
+        public async Task<IEnumerable<Goal>> GetGoalsByUser(long userId)
         {
-            return await _repository.GetGoalsByUserIdAsync(userId);
+            return await _repository.GetGoalsByUserId(userId);
         }
+        public async Task<Goal?> UpdateGoal(long userId, UpdateGoalDto dto)
+        {
+            var existingGoal = await _repository.GetGoalById(dto.Id);
+
+            if (existingGoal == null || existingGoal.UserId != userId)
+                return null;
+
+            existingGoal.GoalName = dto.GoalName;
+            existingGoal.Description = dto.Description;
+            existingGoal.CompletionDate = dto.CompletionDate;
+            existingGoal.Status = dto.Status;
+            existingGoal.PriorityLevel = dto.PriorityLevel;
+
+            await _repository.UpdateGoal(existingGoal);
+
+            return existingGoal;
+        }
+        public async Task<bool> SoftDeleteGoal(long userId, long goalId)
+        {
+            var goal = await _repository.GetGoalById(goalId);
+
+            if (goal == null || goal.UserId != userId)
+                return false;
+
+            goal.Status = 0;
+
+            await _repository.UpdateGoal(goal);
+
+            return true;
+        }
+
+
     }
 }
