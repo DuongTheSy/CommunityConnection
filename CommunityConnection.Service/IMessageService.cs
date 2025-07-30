@@ -1,4 +1,5 @@
 ﻿using CommunityConnection.Common;
+using CommunityConnection.Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace CommunityConnection.Service
     public interface IMessageService
     {
         Task<ApiResponse<MessageChannelResponse>> GetMessagesAsync(long userId,int communityId, int channelId);
+        Task<MessageDto> SendMessageAsync(long channelId, long userId, MessageCreateDto dto);
     }
 }

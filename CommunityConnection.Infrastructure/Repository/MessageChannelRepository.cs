@@ -47,5 +47,18 @@ namespace CommunityConnection.Infrastructure.Repository
 
             return messages;
         }
+
+        public async Task<bool> IsChannelMemberAsync(long channelId, long userId)
+        {
+            return await _db.ChannelMembers
+                .AnyAsync(cm => cm.ChannelId == channelId && cm.UserId == userId);
+        }
+
+        public async Task<Message> CreateMessageAsync(Message message)
+        {
+            _db.Messages.Add(message);
+            await _db.SaveChangesAsync();
+            return message;
+        }
     }
 }

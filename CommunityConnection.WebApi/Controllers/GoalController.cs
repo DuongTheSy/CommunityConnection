@@ -135,11 +135,11 @@ namespace CommunityConnection.WebApi.Controllers
             };
 
             var createdGoal = await _service.CreateGoalAsync(dto);
-            return Ok(new ApiResponse<GoalViewModel>
+            return Ok(new ApiResponse<Goal>
             {
                 status = true,
                 message = "Thêm mục tiêu thành công",
-                data = dto
+                data = createdGoal
             });
         }
 
