@@ -161,7 +161,7 @@ namespace CommunityConnection.WebApi.Controllers
                 });
             }
 
-            return BadRequest(new ApiResponse<StatusResponse>
+            return Ok(new ApiResponse<StatusResponse>
             {
                 status = true,
                 message = "Thành công",
