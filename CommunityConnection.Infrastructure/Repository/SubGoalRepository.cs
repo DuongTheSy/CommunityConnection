@@ -47,6 +47,16 @@ namespace CommunityConnection.Infrastructure.Repository
                                  .ToListAsync();
         }
 
+        public async Task<SubGoal?> GetByIdAsync(long id)
+        {
+            return await _db.SubGoals.FindAsync(id);
+        }
+
+        public async Task UpdateAsync(SubGoal subGoal)
+        {
+            _db.SubGoals.Update(subGoal);
+            await _db.SaveChangesAsync();
+        }
 
     }
 }

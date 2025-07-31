@@ -10,9 +10,9 @@ namespace CommunityConnection.Infrastructure.Repository
     public interface ICommunityRepository
     {
         Task<ListCommunityResponse> GetUserCommunitiesAsync(long userId);
-        Task<ListChannelResponse> GetChannelsOfCommunityByUserAsync(long userId, long communityId);
-
-
+        Task<bool> IsMemberAsync(long userId, long communityId);
+        Task AddMemberAsync(CommunityMember member);
+        Task AddCommunityAsync(Community entity);
     }
 
 }

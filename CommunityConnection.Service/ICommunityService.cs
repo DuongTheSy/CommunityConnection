@@ -1,4 +1,5 @@
 ﻿using CommunityConnection.Common;
+using CommunityConnection.Entities.DTO;
 using CommunityConnection.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace CommunityConnection.Service
     public interface ICommunityService
     {
         Task<ApiResponse<ListCommunityResponse>> GetUserCommunities(long userId);
-        Task<ListChannelResponse> GetChannelsForUserAsync(long userId, long communityId);
-
+        Task<bool> JoinCommunityAsync(long userId, long communityId);
+        Task<ApiResponse<CommunityDto>> CreateCommunityAsync(long userId, CommunityCreateDto dto);
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,7 +28,8 @@ namespace CommunityConnection.Infrastructure.Repository
                 Status = u.Status,
                 CreatedAt = u.CreatedAt,
                 DescriptionSkill = u.DescriptionSkill,
-                RoleId = u.RoleId
+                RoleId = u.RoleId,
+                Address = u.Address
             }).ToList();
         }
 

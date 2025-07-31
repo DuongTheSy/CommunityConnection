@@ -25,6 +25,12 @@ public partial class User
 
     public long? RoleId { get; set; }
 
+    public string? Address { get; set; }
+
+    public double? Latitude { get; set; }
+
+    public double? Longitude { get; set; }
+
     public virtual ICollection<Achievement> Achievements { get; set; } = new List<Achievement>();
 
     public virtual ICollection<ActivitySchedule> ActivitySchedules { get; set; } = new List<ActivitySchedule>();

@@ -101,6 +101,19 @@ namespace CommunityConnection.Service
                 OrderIndex = s.OrderIndex,
             });
     }
+        public async Task<SubGoal> UpdateSubGoalAsync(long id, UpdateSubGoalDto dto)
+        {
+            var subGoal = await _repository.GetByIdAsync(id);
+            if (subGoal == null) return null;
+
+            // Gán lại dữ liệu nếu có
+            subGoal.Title = dto.Title ?? subGoal.Title;
+            subGoal.Description = dto.Description ?? subGoal.Description;
+            subGoal.CompletionDate = dto.CompletionDate ?? subGoal.CompletionDate;
+            subGoal.OrderIndex = dto.OrderIndex ?? subGoal.OrderIndex;
+            await _repository.UpdateAsync(subGoal);
+            return subGoal;
+        }
 
 
 

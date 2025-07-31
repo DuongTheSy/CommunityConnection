@@ -77,6 +77,8 @@ public partial class ThesisContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<ViewUserInfo> ViewUserInfos { get; set; }
+
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
 //        => optionsBuilder.UseSqlServer("Data Source=duongthesy.database.windows.net;Initial Catalog=Thesis;Persist Security Info=True;User ID=duongthesy;Password=Duongsy1201@;Encrypt=True;Trust Server Certificate=True");
@@ -880,6 +882,9 @@ public partial class ThesisContext : DbContext
             entity.HasIndex(e => e.Username, "UQ__user__F3DBC57206FA280B").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Address)
+                .HasMaxLength(255)
+                .HasColumnName("address");
             entity.Property(e => e.AvatarUrl)
                 .HasMaxLength(255)
                 .HasColumnName("avatar_url");
@@ -923,6 +928,32 @@ public partial class ThesisContext : DbContext
                         j.IndexerProperty<long>("UserId").HasColumnName("user_id");
                         j.IndexerProperty<long>("FieldId").HasColumnName("field_id");
                     });
+        });
+
+        modelBuilder.Entity<ViewUserInfo>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("view_user_info");
+
+            entity.Property(e => e.AvatarUrl)
+                .HasMaxLength(255)
+                .HasColumnName("avatar_url");
+            entity.Property(e => e.CommunityName)
+                .HasMaxLength(255)
+                .HasColumnName("community_name");
+            entity.Property(e => e.DescriptionSkill).HasColumnName("description_skill");
+            entity.Property(e => e.FieldName)
+                .HasMaxLength(100)
+                .HasColumnName("field_name");
+            entity.Property(e => e.GoalName)
+                .HasMaxLength(255)
+                .HasColumnName("goal_name");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Role).HasColumnName("role");
+            entity.Property(e => e.Username)
+                .HasMaxLength(50)
+                .HasColumnName("username");
         });
 
         OnModelCreatingPartial(modelBuilder);

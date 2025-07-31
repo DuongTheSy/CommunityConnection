@@ -173,8 +173,9 @@ namespace CommunityConnection.WebApi.Controllers
                 }
             });
         }
-        [HttpPut("update-sub-goal")]
-        public async Task<IActionResult> UpdateSubGoal([FromBody] UpdateGoalDto dto)
+
+        [HttpPut("sub-goals/{id}")]
+        public async Task<IActionResult> UpdateSubGoal(long id, [FromBody] UpdateSubGoalDto dto)
         {
             if (!User.Identity?.IsAuthenticated ?? false)
             {
@@ -190,7 +191,23 @@ namespace CommunityConnection.WebApi.Controllers
                     }
                 });
             }
-            return Ok();
+            var result = await _subGoalService.UpdateSubGoalAsync(id, dto);
+            if (result == null) 
+            {
+                return NotFound(new ApiResponse<string>
+                {
+                    status = false,
+                    message = "KHông tìm thấy mục tiêu",
+                    data = null
+                });
+            }
+
+            return Ok(new ApiResponse<SubGoal>
+            {
+                status = true,
+                message = "Thêm mục tiêu thành công",
+                data = result
+            });
         }
 
     }

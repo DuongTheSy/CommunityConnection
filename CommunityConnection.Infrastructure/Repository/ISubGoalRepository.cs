@@ -12,6 +12,9 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<SubGoal> CreateFullAsync(SubGoal subGoalWithActivities);
         Task<bool> DeleteSubGoalAsync(long id);
         Task<IEnumerable<SubGoal>> GetSubGoalsByGoalIdAsync(long goalId);
+        Task<SubGoal?> GetByIdAsync(long id);
+        Task UpdateAsync(SubGoal subGoal);
+
 
 
     }

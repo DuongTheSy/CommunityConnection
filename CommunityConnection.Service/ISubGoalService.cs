@@ -1,6 +1,7 @@
 ﻿using CommunityConnection.Common;
 using CommunityConnection.Entities;
 using CommunityConnection.Entities.DTO;
+using CommunityConnection.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace CommunityConnection.Service
         Task<List<SubGoalDto>> CreateSubGoalsWithActivitiesAsync(List<CreateSubGoalWithActivitiesRequest> requests);
         Task<bool> DeleteSubGoalAsync(long id);
         Task<IEnumerable<SubGoalDto>> GetSubGoalsByGoalIdAsync(long goalId);
+        Task<SubGoal> UpdateSubGoalAsync(long id, UpdateSubGoalDto dto);
 
     }
 }

@@ -34,5 +34,6 @@ namespace CommunityConnection.Entities
         public string? DescriptionSkill { get; set; }
 
         public long? RoleId { get; set; }
+        public string? Address { get; set; }
     }
 }

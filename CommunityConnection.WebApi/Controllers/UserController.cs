@@ -36,6 +36,15 @@ namespace CommunityConnection.WebApi.Controllers
                 //        message = "Thành công"
                 //    });
                 //}
+                if (string.IsNullOrEmpty(jwtToken)) {
+                    return NotFound(new ApiResponse<string>
+                    {
+                        status = false,
+                        message = "Tài khoản hoặc mật khẩu không chính xác",
+                        data = null
+                    });
+                }
+
                 return Ok(new ApiResponse<string>
                 {
                     status = true,
@@ -73,84 +82,6 @@ namespace CommunityConnection.WebApi.Controllers
             var users = _userService.GetAllUsers();
             return Ok(users);
         }
-        [HttpGet("/communities")]
-        public async Task<IActionResult> GetUserCommunities()
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Unauthorized(new ApiResponse<StatusResponse>
-                {
-                    status = true,
-                    message = "Thành công",
-                    data = new StatusResponse
-                    {
-                        status = false,
-                        message = "Bạn cần đăng nhập"
 
-                    }
-                });
-            }
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (userIdClaim == null)
-            {
-                return Unauthorized(new ApiResponse<StatusResponse>
-                {
-                    status = true,
-                    message = "Thành công",
-                    data = new StatusResponse
-                    {
-                        status = false,
-                        message = "Kiểm tra lại Token"
-
-                    }
-                });
-            }
-            long idToken = long.Parse(userIdClaim.Value);
-            var result = await _communityService.GetUserCommunities(idToken);
-            return Ok(result);
-        }
-        [HttpGet("/communities/{communityId}/channels")]
-        public async Task<IActionResult> GetUserChannelsInCommunity(long communityId)
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Unauthorized(new ApiResponse<StatusResponse>
-                {
-                    status = true,
-                    message = "Thành công",
-                    data = new StatusResponse
-                    {
-                        status = false,
-                        message = "Bạn cần đăng nhập"
-
-                    }
-                });
-            }
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (userIdClaim == null)
-            {
-                return Unauthorized(new ApiResponse<StatusResponse>
-                {
-                    status = true,
-                    message = "Thành công",
-                    data = new StatusResponse
-                    {
-                        status = false,
-                        message = "Kiểm tra lại Token"
-
-                    }
-                });
-            }
-            long idToken = long.Parse(userIdClaim.Value);
-            var channels = await _communityService.GetChannelsForUserAsync(idToken, communityId);
-            return Ok(new ApiResponse<ListChannelResponse>
-            {
-                status = true,
-                message = "Lấy danh sách kênh thành công",
-                data = channels
-            });
-        } 
     }
 }

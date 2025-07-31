@@ -131,7 +131,7 @@ namespace CommunityConnection.WebApi.Controllers
                 GoalName = model.GoalName,
                 CompletionDate = model.CompletionDate,
                 Status = 1, 
-                PriorityLevel = "Medium" // Mặc định là mức độ ưu tiên trung bình
+                PriorityLevel = "Medium"
             };
 
             var createdGoal = await _service.CreateGoalAsync(dto);

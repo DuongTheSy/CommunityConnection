@@ -1,10 +1,10 @@
 ﻿using CommunityConnection.Common;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace CommunityConnection.Infrastructure.Repository
 {
@@ -19,7 +19,7 @@ namespace CommunityConnection.Infrastructure.Repository
 
         public async Task<ListCommunityResponse> GetUserCommunitiesAsync(long userId)
         {
-            var communities = _db.CommunityMembers
+            var communities = await _db.CommunityMembers
                 .Where(cm => cm.UserId == userId)
                 .Include(cm => cm.Community)
                 .Select(cm => new
@@ -31,7 +31,7 @@ namespace CommunityConnection.Infrastructure.Repository
                         Name = cm.Community.CommunityName,
                         Description = cm.Community.Description,
                     }
-                });
+                }).ToListAsync();
 
 
             return new ListCommunityResponse
@@ -40,28 +40,22 @@ namespace CommunityConnection.Infrastructure.Repository
                 Communities = communities.Select(c => c.Community).ToList()
             };
         }
-        public async Task<ListChannelResponse> GetChannelsOfCommunityByUserAsync(long userId, long communityId)
+        public async Task<bool> IsMemberAsync(long userId, long communityId)
         {
-            var channels = _db.ChannelMembers
-                 .Where(cm => cm.UserId == userId && cm.Channel.CommunityId == communityId)
-                 .Select(cm => new ChannelResponse
-                 {
-                     Id = cm.Channel.Id,
-                     Name = cm.Channel.ChannelName,
-                     Description = cm.Channel.Description
-                 })
-                 .ToList(); // dùng sync
-
-            var result = new ListChannelResponse
-            {
-                User_Id = userId,
-                Community_Id = communityId,
-                Channels = channels
-            };
-
-            return result;
+            return await _db.CommunityMembers
+                .AnyAsync(cm => cm.UserId == userId && cm.CommunityId == communityId);
         }
 
+        public async Task AddMemberAsync(CommunityMember member)
+        {
+            _db.CommunityMembers.Add(member);
+            await _db.SaveChangesAsync();
+        }
+        public async Task AddCommunityAsync(Community entity)
+        {
+            _db.Communities.Add(entity);
+            await _db.SaveChangesAsync();
+        }
 
     }
 }
