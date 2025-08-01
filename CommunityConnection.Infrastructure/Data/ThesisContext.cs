@@ -764,6 +764,8 @@ public partial class ThesisContext : DbContext
 
             entity.ToTable("reminder_notification");
 
+            entity.HasIndex(e => e.ActivityId, "uq_reminder_activity_id").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ActivityId).HasColumnName("activity_id");
             entity.Property(e => e.Content).HasColumnName("content");
@@ -775,8 +777,8 @@ public partial class ThesisContext : DbContext
                 .HasColumnName("send_time");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Activity).WithMany(p => p.ReminderNotifications)
-                .HasForeignKey(d => d.ActivityId)
+            entity.HasOne(d => d.Activity).WithOne(p => p.ReminderNotification)
+                .HasForeignKey<ReminderNotification>(d => d.ActivityId)
                 .HasConstraintName("fk_reminder_activity");
 
             entity.HasOne(d => d.User).WithMany(p => p.ReminderNotifications)

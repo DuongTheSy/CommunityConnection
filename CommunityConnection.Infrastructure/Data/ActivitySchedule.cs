@@ -23,7 +23,7 @@ public partial class ActivitySchedule
 
     public virtual ICollection<ActivitySession> ActivitySessions { get; set; } = new List<ActivitySession>();
 
-    public virtual ICollection<ReminderNotification> ReminderNotifications { get; set; } = new List<ReminderNotification>();
+    public virtual ReminderNotification? ReminderNotification { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

@@ -8,7 +8,6 @@ namespace CommunityConnection.Entities.DTO
 {
     public class CreateActivityScheduleDto
     {
-        public long UserId { get; set; }
         public string ActivityName { get; set; } = null!;
         public string? Description { get; set; }
 

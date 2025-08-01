@@ -60,6 +60,7 @@ namespace CommunityConnection.WebApi
             builder.Services.AddScoped<IChannelService, ChannelService>();
             builder.Services.AddScoped<IActivityScheduleRepository, ActivityScheduleRepository>();
             builder.Services.AddScoped<IActivityScheduleService, ActivityScheduleService>();
+            builder.Services.AddScoped<IReminderNotificationRepository, ReminderNotificationRepository>();
             var app = builder.Build();
             app.UseDefaultFiles();
             app.UseStaticFiles();

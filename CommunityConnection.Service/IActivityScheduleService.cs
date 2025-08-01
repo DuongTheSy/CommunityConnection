@@ -1,4 +1,5 @@
-﻿using CommunityConnection.Entities.DTO;
+﻿using CommunityConnection.Common;
+using CommunityConnection.Entities.DTO;
 using CommunityConnection.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,10 @@ namespace CommunityConnection.Service
 {
     public interface IActivityScheduleService
     {
-        Task<ActivitySchedule> CreateAsync(CreateActivityScheduleDto dto);
+        Task<ApiResponse<ActivitySchedule>> CreateAsync(long userId, CreateActivityScheduleDto dto);
+        Task<List<ActivitySchedule>> GetByUserIdAsync(long userId);
+
+        Task<ApiResponse<ReminderNotification>> CreateRemindAsync(long userId, CreateReminderNotificationDto dto);
     }
 
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 namespace CommunityConnection.Infrastructure.Repository
 {
     public class ActivityScheduleRepository : IActivityScheduleRepository
@@ -21,5 +21,16 @@ namespace CommunityConnection.Infrastructure.Repository
             await _db.SaveChangesAsync();
             return schedule;
         }
+        public async Task<List<ActivitySchedule>> GetByUserIdAsync(long userId)
+        {
+
+
+            return await _db.ActivitySchedules
+                .Where(a => a.UserId == userId)
+                .Include(s => s.ReminderNotification)
+                .OrderBy(a => a.Date).ThenBy(a => a.StartTime)
+                .ToListAsync();
+        }
+
     }
 }
