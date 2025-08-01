@@ -124,10 +124,16 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.ActivityName)
                 .HasMaxLength(255)
                 .HasColumnName("activity_name");
-            entity.Property(e => e.Date).HasColumnName("date");
+            entity.Property(e => e.Date)
+                .HasColumnType("datetime")
+                .HasColumnName("date");
             entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.EndTime).HasColumnName("end_time");
-            entity.Property(e => e.StartTime).HasColumnName("start_time");
+            entity.Property(e => e.EndTime)
+                .HasMaxLength(50)
+                .HasColumnName("end_time");
+            entity.Property(e => e.StartTime)
+                .HasMaxLength(50)
+                .HasColumnName("start_time");
             entity.Property(e => e.Status)
                 .HasDefaultValue(1)
                 .HasColumnName("status");
@@ -897,6 +903,7 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");
+            entity.Property(e => e.FullName).HasMaxLength(255);
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .HasColumnName("password");
@@ -904,6 +911,9 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.Status)
                 .HasDefaultValue(true)
                 .HasColumnName("status");
+            entity.Property(e => e.Token)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .HasColumnName("username");

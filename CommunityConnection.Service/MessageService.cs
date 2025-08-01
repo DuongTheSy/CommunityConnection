@@ -45,9 +45,9 @@ namespace CommunityConnection.Service
             }
         }
 
-        public async Task<MessageDto> SendMessageAsync(long channelId, long userId, MessageCreateDto dto)
+        public async Task<MessageDto> SendMessageAsync(long channelId, long userId, string content)
         {
-            if (string.IsNullOrWhiteSpace(dto.Content))
+            if (string.IsNullOrWhiteSpace(content))
                 throw new ArgumentException("Nội dung không được để trống.");
 
             var isMember = await _repository.IsChannelMemberAsync(channelId, userId);
@@ -58,7 +58,7 @@ namespace CommunityConnection.Service
             {
                 ChannelId = channelId,
                 UserId = userId,
-                Content = dto.Content,
+                Content = content,
                 SentAt = DateTime.UtcNow
             };
 

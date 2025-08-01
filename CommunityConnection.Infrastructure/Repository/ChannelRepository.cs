@@ -37,8 +37,9 @@ namespace CommunityConnection.Infrastructure.Repository
                      Id = cm.Channel.Id,
                      Name = cm.Channel.ChannelName,
                      Description = cm.Channel.Description
+                     
                  })
-                 .ToListAsync(); // dùng sync
+                 .ToListAsync();
 
             var result = new ListChannelResponse
             {

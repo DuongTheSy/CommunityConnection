@@ -30,6 +30,7 @@ namespace CommunityConnection.Infrastructure.Repository
                         Id = cm.Community.Id,
                         Name = cm.Community.CommunityName,
                         Description = cm.Community.Description,
+                        AccessStatus = cm.Community.AccessStatus // 0: private, 1: public
                     }
                 }).ToListAsync();
 

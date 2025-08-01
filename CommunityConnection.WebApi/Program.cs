@@ -58,6 +58,8 @@ namespace CommunityConnection.WebApi
             builder.Services.AddScoped<ISubGoalService, SubGoalService>();
             builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
             builder.Services.AddScoped<IChannelService, ChannelService>();
+            builder.Services.AddScoped<IActivityScheduleRepository, ActivityScheduleRepository>();
+            builder.Services.AddScoped<IActivityScheduleService, ActivityScheduleService>();
             var app = builder.Build();
             app.UseDefaultFiles();
             app.UseStaticFiles();

@@ -11,6 +11,7 @@ namespace CommunityConnection.Common
         public long Id { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
+        public int? AccessStatus { get; set; } // 0: Public, 1: Private
     }
 
     public class ListCommunityResponse

@@ -18,12 +18,12 @@ namespace CommunityConnection.Service
             _userRepository = userRepository;
         }
 
-        public IEnumerable<UserModel> GetAllUsers()
+        public IEnumerable<User> GetAllUsers()
         {
             return _userRepository.GetAllUsers();
         }
 
-        public string Login(LoginModel loginModel)
+        public User Login(LoginModel loginModel)
         {
             return _userRepository.Login(loginModel);
         }

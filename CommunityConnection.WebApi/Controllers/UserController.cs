@@ -28,7 +28,7 @@ namespace CommunityConnection.WebApi.Controllers
         {
             try
             {
-                string jwtToken = _userService.Login(model);
+                User result = _userService.Login(model);
                 //if(jwtToken != null) {
                 //    return Ok(new ApiResponse<string>
                 //    {
@@ -36,7 +36,7 @@ namespace CommunityConnection.WebApi.Controllers
                 //        message = "Thành công"
                 //    });
                 //}
-                if (string.IsNullOrEmpty(jwtToken)) {
+                if (result == null) {
                     return NotFound(new ApiResponse<string>
                     {
                         status = false,
@@ -45,11 +45,11 @@ namespace CommunityConnection.WebApi.Controllers
                     });
                 }
 
-                return Ok(new ApiResponse<string>
+                return Ok(new ApiResponse<User>
                 {
                     status = true,
                     message = "Thành công",
-                    data = jwtToken
+                    data = result
                 });
             }
             catch(Exception ex)

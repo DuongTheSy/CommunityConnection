@@ -16,38 +16,26 @@ namespace CommunityConnection.Infrastructure.Repository
         public UserRepository(ThesisContext _context) {
             _db = _context;
         }
-        public IEnumerable<UserModel> GetAllUsers()
+        public IEnumerable<User> GetAllUsers()
         {
-            return _db.Users.Select(u => new UserModel
-            {
-                Id = u.Id,
-                Username = u.Username,
-                Email = u.Email,
-                AvatarUrl = u.AvatarUrl,
-                Description = u.Description,
-                Status = u.Status,
-                CreatedAt = u.CreatedAt,
-                DescriptionSkill = u.DescriptionSkill,
-                RoleId = u.RoleId,
-                Address = u.Address
-            }).ToList();
+            return _db.Users.ToList();
         }
 
-        public UserModel? GetUserById(int id)
+        public User? GetUserById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public string Login(LoginModel loginModel)
+        public User Login(LoginModel loginModel)
         {
             var user = _db.Users.FirstOrDefault(u => u.Username == loginModel.UserName && u.Password == loginModel.Password);
             if (user == null)
             {
                 return null; 
             }
-            // Giả sử bạn có một phương thức để tạo token
             var jwtHelper = new JwtHelper();
-            return jwtHelper.GenerateToken(user.Username, user.RoleId == 1 ? "User" : "Admin", user.Id);
+            user.Token = jwtHelper.GenerateToken(user.Username, user.RoleId == 8 ? "Admin" : "User", user.Id);
+            return user;
         }
     }
 }

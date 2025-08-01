@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace CommunityConnection.Infrastructure.Repository
 {
-    public interface IUserRepository
+    public interface IActivityScheduleRepository
     {
-        IEnumerable<User> GetAllUsers();
-        User? GetUserById(int id);
-        public User Login(LoginModel loginModel);
+        Task<ActivitySchedule> CreateAsync(ActivitySchedule schedule);
     }
 }

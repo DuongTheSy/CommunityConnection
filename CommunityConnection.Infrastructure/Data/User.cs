@@ -31,6 +31,10 @@ public partial class User
 
     public double? Longitude { get; set; }
 
+    public string? FullName { get; set; }
+
+    public string? Token { get; set; }
+
     public virtual ICollection<Achievement> Achievements { get; set; } = new List<Achievement>();
 
     public virtual ICollection<ActivitySchedule> ActivitySchedules { get; set; } = new List<ActivitySchedule>();
