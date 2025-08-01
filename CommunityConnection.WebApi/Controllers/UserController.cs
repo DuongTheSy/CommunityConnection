@@ -37,7 +37,7 @@ namespace CommunityConnection.WebApi.Controllers
                 //    });
                 //}
                 if (result == null) {
-                    return NotFound(new ApiResponse<string>
+                    return Ok(new ApiResponse<string>
                     {
                         status = false,
                         message = "Tài khoản hoặc mật khẩu không chính xác",
