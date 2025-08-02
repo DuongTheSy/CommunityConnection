@@ -90,6 +90,53 @@ namespace CommunityConnection.Service
                 data = created
             };
         }
+
+        public async Task<ApiResponse<ActivitySchedule>> UpdateAsync(long userId, long id, UpdateActivityScheduleDto dto)
+        {
+            var schedule = await _repository.GetByIdAsync(id);
+            if (schedule == null)
+                return (new ApiResponse<ActivitySchedule>
+                {
+                    status = false,
+                    message = "Lịch học không tồn tại",
+                    data = null
+                });
+
+            if (schedule.UserId != userId)
+                return (new ApiResponse<ActivitySchedule>
+                {
+                    status = false,
+                    message = "Bạn không có quyền sửa lịch học này",
+                    data = null
+                });
+
+            if (dto.ActivityName != "")
+                schedule.ActivityName = dto.ActivityName;
+
+            if (dto.Description != "")
+                schedule.Description = dto.Description;
+
+            if (dto.Date == null)
+                schedule.Date = dto.Date;
+
+            if (dto.StartTime != "")
+                schedule.StartTime = dto.StartTime;
+
+            if (dto.EndTime != "")
+                schedule.EndTime = dto.EndTime;
+
+            if (dto.Status.HasValue)
+                schedule.Status = dto.Status;
+
+            await _repository.UpdateAsync(schedule);
+
+            return (new ApiResponse<ActivitySchedule>
+            {
+                status = true,
+                message = "Cập nhật lịch học thành công",
+                data = schedule
+            });
+        }
     }
 
 }

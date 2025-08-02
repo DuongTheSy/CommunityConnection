@@ -17,7 +17,7 @@ namespace CommunityConnection.Infrastructure.Repository
             _db = context;
         }
 
-        public async Task<List<MessageResponse>> GetMessagesAsync(long userId, int communityId, int channelId)
+        public async Task<List<MessageResponse>> GetMessagesAsync(long userId, int channelId)
         {
 
             // Check if the user is a member of the community
@@ -30,7 +30,7 @@ namespace CommunityConnection.Infrastructure.Repository
             }
 
             var messages = await _db.Messages
-                .Where(m => m.ChannelId == channelId && m.Channel.CommunityId == communityId)
+                .Where(m => m.ChannelId == channelId)
                 .OrderBy(m => m.SentAt)
                 .Select(m => new MessageResponse
                 {

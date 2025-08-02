@@ -9,7 +9,9 @@ namespace CommunityConnection.Infrastructure.Repository
     public interface IActivityScheduleRepository
     {
         Task<ActivitySchedule> CreateAsync(ActivitySchedule schedule);
-        Task<List<ActivitySchedule>> GetByUserIdAsync(long userId);
+        Task<ActivitySchedule?> GetByIdAsync(long id);
+        Task<List<ActivitySchedule>> GetByUserIdAsync(long userId); // lấy danh sách lịch trình theo userId
+        Task UpdateAsync(ActivitySchedule schedule);
 
     }
 }

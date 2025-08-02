@@ -20,7 +20,7 @@ namespace CommunityConnection.WebApi.Controllers
         }
 
         [HttpGet("communities/channels/messages")]
-        public async Task<IActionResult> GetMessages(int communityId, int channelId)
+        public async Task<IActionResult> GetMessages(int channelId)
         {
             if (!User.Identity?.IsAuthenticated ?? false)
             {
@@ -52,7 +52,7 @@ namespace CommunityConnection.WebApi.Controllers
                 });
 
             long userId = long.Parse(userIdClaim.Value);
-            var result = await _service.GetMessagesAsync(userId,communityId, channelId);
+            var result = await _service.GetMessagesAsync(userId, channelId);
             return Ok(result);
         }
         //[HttpPost]

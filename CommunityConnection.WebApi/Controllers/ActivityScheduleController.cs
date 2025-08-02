@@ -42,7 +42,7 @@ namespace CommunityConnection.WebApi.Controllers
                 });
             }
             long userId = long.Parse(userIdClaim.Value);
-            var result = await _service.CreateAsync(userId,dto);
+            var result = await _service.CreateAsync(userId, dto);
             return Ok(result);
         }
         [HttpGet("get-activity-schedule")]
@@ -79,6 +79,37 @@ namespace CommunityConnection.WebApi.Controllers
                 data = schedules
             });
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(long id, [FromBody] UpdateActivityScheduleDto dto)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Kiểm tra lại token",
+                    data = null
+                });
+            }
+            long userId = long.Parse(userIdClaim.Value);
+            return Ok(await _service.UpdateAsync(userId, id, dto));
+        }
+
+
+
+
+
         [HttpPost("create-remind")]
         public async Task<IActionResult> CreateReminder([FromBody] CreateReminderNotificationDto dto)
         {
@@ -108,5 +139,6 @@ namespace CommunityConnection.WebApi.Controllers
 
             return Ok(result);
         }
+
     }
 }

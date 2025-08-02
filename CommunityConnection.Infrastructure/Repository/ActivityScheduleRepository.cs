@@ -26,11 +26,22 @@ namespace CommunityConnection.Infrastructure.Repository
 
 
             return await _db.ActivitySchedules
-                .Where(a => a.UserId == userId)
+                .Where(a => a.UserId == userId && a.Status != 0)
                 .Include(s => s.ReminderNotification)
                 .OrderBy(a => a.Date).ThenBy(a => a.StartTime)
                 .ToListAsync();
         }
 
+        public async Task UpdateAsync(ActivitySchedule schedule)
+        {
+            _db.ActivitySchedules.Update(schedule);
+            await _db.SaveChangesAsync();
+        }
+        public async Task<ActivitySchedule?> GetByIdAsync(long id)
+        {
+            return await _db.ActivitySchedules
+                .Include(x => x.ReminderNotification)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
     }
 }

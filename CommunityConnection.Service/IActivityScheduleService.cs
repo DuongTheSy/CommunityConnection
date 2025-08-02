@@ -13,6 +13,9 @@ namespace CommunityConnection.Service
     {
         Task<ApiResponse<ActivitySchedule>> CreateAsync(long userId, CreateActivityScheduleDto dto);
         Task<List<ActivitySchedule>> GetByUserIdAsync(long userId);
+        Task<ApiResponse<ActivitySchedule>> UpdateAsync(long userId, long id, UpdateActivityScheduleDto dto);
+
+
 
         Task<ApiResponse<ReminderNotification>> CreateRemindAsync(long userId, CreateReminderNotificationDto dto);
     }

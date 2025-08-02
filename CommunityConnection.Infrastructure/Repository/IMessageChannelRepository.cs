@@ -9,7 +9,7 @@ namespace CommunityConnection.Infrastructure.Repository
 {
     public interface IMessageChannelRepository
     { 
-        Task<List<MessageResponse>> GetMessagesAsync(long userId, int communityId, int channelId);
+        Task<List<MessageResponse>> GetMessagesAsync(long userId, int channelId);
         Task<bool> IsChannelMemberAsync(long channelId, long userId);
         Task<Message> CreateMessageAsync(Message message);
     }

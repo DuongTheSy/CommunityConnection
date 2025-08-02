@@ -9,7 +9,6 @@ namespace CommunityConnection.Common
     public class MessageChannelResponse
     {
         public int ChannelId { get; set; }
-        public int CommunityId { get; set; }
         public List<MessageResponse> Messages { get; set; }
     }
     public class MessageDetail
