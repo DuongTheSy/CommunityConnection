@@ -22,6 +22,10 @@ namespace CommunityConnection.WebApi.Hubs
             {
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, user.Room);
                 await Clients.Group(user.Room).SendAsync("UserLeft", user.Name);
+
+                // Gửi lại số người online
+                var count = _users.Values.Count(u => u.Room == user.Room);
+                await Clients.Group(user.Room).SendAsync("UpdateUserCount", count);
             }
         }
 
@@ -30,6 +34,10 @@ namespace CommunityConnection.WebApi.Hubs
             _users[Context.ConnectionId] = new User(user_id, userName, roomName);
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
             await Clients.Group(roomName).SendAsync("UserJoined", userName);
+
+            // Gửi số người online
+            var count = _users.Values.Count(u => u.Room == roomName);
+            await Clients.Group(roomName).SendAsync("UpdateUserCount", count);
         }
 
         public async Task SendMessageToRoom(string roomName, string content)
