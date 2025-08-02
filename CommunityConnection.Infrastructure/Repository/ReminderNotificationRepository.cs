@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,16 @@ namespace CommunityConnection.Infrastructure.Repository
             _db.ReminderNotifications.Add(reminder);
             await _db.SaveChangesAsync();
             return reminder;
+        }
+        public async Task<ReminderNotification?> GetByIdAsync(long id)
+        {
+            return await _db.ReminderNotifications.FindAsync(id);
+        }
+
+        public async Task DeleteAsync(ReminderNotification reminder)
+        {
+            _db.ReminderNotifications.Remove(reminder);
+            await _db.SaveChangesAsync();
         }
     }
 

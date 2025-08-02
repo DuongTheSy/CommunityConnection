@@ -10,6 +10,8 @@ namespace CommunityConnection.Infrastructure.Repository
     {
         Task<ReminderNotification?> GetByActivityIdAsync(long activityId);
         Task<ReminderNotification> CreateAsync(ReminderNotification reminder);
+        Task<ReminderNotification?> GetByIdAsync(long id);
+        Task DeleteAsync(ReminderNotification reminder);
     }
 
 }

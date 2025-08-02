@@ -112,6 +112,76 @@ namespace CommunityConnection.Service
                 data = result
             };
         }
+        public async Task<ApiResponse<Community>> UpdateCommunityAsync(long communityId, long userId, UpdateCommunityDto dto)
+        {
+            var member = await _repository.GetMemberAsync(communityId, userId);
+            if (member == null || member.Role != 0)
+            {
+                return new ApiResponse<Community>
+                {
+                    status = false,
+                    message = "Chỉ chủ sở hữu mới có quyền sửa cộng đồng",
+                    data = null
+                };
+            }
+
+            var community = await _repository.GetByIdAsync(communityId);
+            if (community == null)
+            {
+                return new ApiResponse<Community>
+                {
+                    status = false,
+                    message = "Cộng đồng không tồn tại",
+                    data = null
+                };
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.CommunityName)) community.CommunityName = dto.CommunityName;
+            if (!string.IsNullOrWhiteSpace(dto.Description)) community.Description = dto.Description;
+            if (dto.AccessStatus != null) community.AccessStatus = dto.AccessStatus;
+            if (!string.IsNullOrWhiteSpace(dto.SkillLevel)) community.SkillLevel = dto.SkillLevel;
+
+            await _repository.UpdateAsync(community);
+            return new ApiResponse<Community>
+            {
+                status = true,
+                message = "Cập nhật cộng đồng thành công",
+                data = community
+            };
+        }
+        public async Task<ApiResponse<string>> DeleteCommunityAsync(long communityId, long userId)
+        {
+            var member = await _repository.GetMemberAsync(communityId, userId);
+            if (member == null || member.Role != 0)
+            {
+                return new ApiResponse<string>
+                {
+                    status = false,
+                    message = "Chỉ chủ sở hữu mới có quyền xóa cộng đồng",
+                    data = null
+                };
+            }
+
+            var community = await _repository.GetByIdAsync(communityId);
+            if (community == null)
+            {
+                return new ApiResponse<string>
+                {
+                    status = false,
+                    message = "Cộng đồng không tồn tại",
+                    data = null
+                };
+            }
+
+            await _repository.DeleteAsync(community);
+
+            return new ApiResponse<string>
+            {
+                status = true,
+                message = "Xóa cộng đồng thành công",
+                data = null
+            };
+        }
 
     }
 }

@@ -137,6 +137,30 @@ namespace CommunityConnection.Service
                 data = schedule
             });
         }
+
+        public async Task<ApiResponse<ReminderNotification>> DeleteReminderAsync(long id)
+        {
+            var reminder = await _repoRemind.GetByIdAsync(id);
+            if (reminder == null)
+            {
+                return (new ApiResponse<ReminderNotification>
+                {
+                    status = false,
+                    message = "Không tìm thấy nhắc nhở",
+                    data = null
+                });
+            }
+
+            await _repoRemind.DeleteAsync(reminder);
+            return (new ApiResponse<ReminderNotification>
+            {
+                status = true,
+                message = "Xóa nhắc nhở thành công",
+                data = null
+            });
+        }
+
+
     }
 
 }

@@ -58,5 +58,26 @@ namespace CommunityConnection.Infrastructure.Repository
             await _db.SaveChangesAsync();
         }
 
+        public async Task<Community?> GetByIdAsync(long communityId)
+        {
+            return await _db.Communities.FindAsync(communityId);
+        }
+
+        public async Task<CommunityMember?> GetMemberAsync(long communityId, long userId)
+        {
+            return await _db.CommunityMembers
+                .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.UserId == userId);
+        }
+
+        public async Task UpdateAsync(Community community)
+        {
+            _db.Communities.Update(community);
+            await _db.SaveChangesAsync();
+        }
+        public async Task DeleteAsync(Community community)
+        {
+            _db.Communities.Remove(community);
+            await _db.SaveChangesAsync();
+        }
     }
 }

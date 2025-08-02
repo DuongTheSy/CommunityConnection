@@ -13,6 +13,13 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<bool> IsMemberAsync(long userId, long communityId);
         Task AddMemberAsync(CommunityMember member);
         Task AddCommunityAsync(Community entity);
+        #region Xóa community
+        Task<Community?> GetByIdAsync(long communityId);
+        Task<CommunityMember?> GetMemberAsync(long communityId, long userId);
+        Task UpdateAsync(Community community);
+        #endregion
+
+        Task DeleteAsync(Community community);
     }
 
 }

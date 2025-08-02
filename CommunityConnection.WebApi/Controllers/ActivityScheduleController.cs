@@ -139,6 +139,11 @@ namespace CommunityConnection.WebApi.Controllers
 
             return Ok(result);
         }
+        [HttpDelete("delete-remind/{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            return Ok(await _service.DeleteReminderAsync(id));
+        }
 
     }
 }

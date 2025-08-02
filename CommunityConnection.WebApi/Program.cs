@@ -3,6 +3,7 @@ using CommunityConnection.Service;
 using CommunityConnection.WebApi.Hubs;
 using CommunityConnection.WebApi.Middleware;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace CommunityConnection.WebApi
 {
@@ -33,6 +34,13 @@ namespace CommunityConnection.WebApi
             //    });
             //});
 
+            // tránh xảy ra lỗi vòng lăp khóa ngoại
+            builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            });
 
             builder.Services.AddCors(options =>
             {

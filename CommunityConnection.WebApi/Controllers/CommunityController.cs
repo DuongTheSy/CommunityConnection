@@ -172,6 +172,46 @@ namespace CommunityConnection.WebApi.Controllers
 
             return Ok(result);
         }
+        [HttpPut("{communityId}")]
+        public async Task<IActionResult> UpdateCommunity(long communityId, [FromBody] UpdateCommunityDto dto)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Kiểm tra lại token",
+                    data = null
+                });
+            }
+            long idToken = long.Parse(userIdClaim.Value);
+
+            return Ok(await _service.UpdateCommunityAsync(communityId, idToken, dto));
+        }
+        [HttpDelete("{communityId}")]
+        public async Task<IActionResult> DeleteCommunity(long communityId)
+        {
+            var userId = GetUserIdFromToken();
+            var result = await _service.DeleteCommunityAsync(communityId, userId);
+            if (!result.status) return Ok(result);
+            return Ok(result);
+        }
+
+        private long GetUserIdFromToken()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return userIdClaim != null ? long.Parse(userIdClaim.Value) : 0;
+        }
     }
 }
