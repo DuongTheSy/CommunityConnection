@@ -50,5 +50,24 @@ namespace CommunityConnection.Infrastructure.Repository
 
             return result;
         }
+
+        public async Task<CommunityMember?> GetCommunityOwnerAsync(long communityId)
+        {
+            return await _db.CommunityMembers
+                .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.Role == 0);
+        }
+
+        public async Task AddChannelAsync(Channel channel)
+        {
+            _db.Channels.Add(channel);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task AddChannelMembersAsync(List<ChannelMember> members)
+        {
+            _db.ChannelMembers.AddRange(members);
+            await _db.SaveChangesAsync();
+        }
+
     }
 }

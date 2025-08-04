@@ -12,5 +12,9 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<Channel> CreateChannelAsync(Channel channel);
         Task AddMemberAsync(ChannelMember member);
         Task<ListChannelResponse> GetChannelsOfCommunityByUserAsync(long userId, long communityId);
+
+        Task<CommunityMember?> GetCommunityOwnerAsync(long communityId);
+        Task AddChannelAsync(Channel channel);
+        Task AddChannelMembersAsync(List<ChannelMember> members);
     }   
 }

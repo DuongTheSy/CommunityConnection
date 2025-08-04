@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -85,12 +84,12 @@ namespace CommunityConnection.Service
             });
 
             // Tạo kênh mặc định
-            var channelDto = await _channelService.CreateChannelAsync(userId, new ChannelCreateDto
+            ApiResponse<ChannelDto> channelDto = await _channelService.CreateChannelFromOperatorOrOwnerAsync(new ChannelCreateDto
             {
                 CommunityId = community.Id,
                 ChannelName = "Kênh chat chung",
                 Description = "Kênh này để trao đổi chung trong cộng đồng"
-            });
+            },userId);
 
 
             var result = new CommunityDto
@@ -102,7 +101,7 @@ namespace CommunityConnection.Service
                 CreatedAt = community.CreatedAt,
                 SkillLevel = community.SkillLevel,
                 MemberCount = 1,
-                DefaultChannel = channelDto // nếu channelService trả ApiResponse<ChannelDto>
+                DefaultChannel = channelDto.data // nếu channelService trả ApiResponse<ChannelDto>
             };
 
             return new ApiResponse<CommunityDto>

@@ -17,43 +17,43 @@ namespace CommunityConnection.WebApi.Controllers
             _service = service;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateChannel([FromBody] ChannelCreateDto dto)
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Unauthorized(new ApiResponse<StatusResponse>
-                {
-                    status = true,
-                    message = "Thành công",
-                    data = new StatusResponse
-                    {
-                        status = false,
-                        message = "Bạn cần đăng nhập"
+        //[HttpPost]
+        //public async Task<IActionResult> CreateChannel([FromBody] ChannelCreateDto dto)
+        //{
+        //    if (!User.Identity.IsAuthenticated)
+        //    {
+        //        return Unauthorized(new ApiResponse<StatusResponse>
+        //        {
+        //            status = true,
+        //            message = "Thành công",
+        //            data = new StatusResponse
+        //            {
+        //                status = false,
+        //                message = "Bạn cần đăng nhập"
 
-                    }
-                });
-            }
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        //            }
+        //        });
+        //    }
+        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (userIdClaim == null)
-            {
-                return Unauthorized(new ApiResponse<StatusResponse>
-                {
-                    status = true,
-                    message = "Thành công",
-                    data = new StatusResponse
-                    {
-                        status = false,
-                        message = "Kiểm tra lại Token"
+        //    if (userIdClaim == null)
+        //    {
+        //        return Unauthorized(new ApiResponse<StatusResponse>
+        //        {
+        //            status = true,
+        //            message = "Thành công",
+        //            data = new StatusResponse
+        //            {
+        //                status = false,
+        //                message = "Kiểm tra lại Token"
 
-                    }
-                });
-            }
-            long idToken = long.Parse(userIdClaim.Value);
-            var result = await _service.CreateChannelAsync(idToken, dto);
-            return Ok(result);
-        }
+        //            }
+        //        });
+        //    }
+        //    long idToken = long.Parse(userIdClaim.Value);
+        //    var result = await _service.CreateChannelAsync(idToken, dto);
+        //    return Ok(result);
+        //}
 
         [HttpGet]
         public async Task<IActionResult> GetUserChannelsInCommunity(long communityId)
@@ -98,6 +98,19 @@ namespace CommunityConnection.WebApi.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateChannelByOpenratorOrOwner([FromBody] ChannelCreateDto dto)
+        {
+            var userId = GetUserIdFromToken();
+            var result = await _service.CreateChannelFromOperatorOrOwnerAsync(dto, userId);
+            if (!result.status) return BadRequest(result);
+            return Ok(result);
+        }
 
+        private long GetUserIdFromToken()
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return claim != null ? long.Parse(claim.Value) : 0;
+        }
     }
 }
