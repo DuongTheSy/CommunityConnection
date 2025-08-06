@@ -110,6 +110,12 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.ActivityName)
                 .HasMaxLength(255)
                 .HasColumnName("activity_name");
+            entity.Property(e => e.ActualEndTime)
+                .HasColumnType("datetime")
+                .HasColumnName("actual_end_time");
+            entity.Property(e => e.ActualStartTime)
+                .HasColumnType("datetime")
+                .HasColumnName("actual_start_time");
             entity.Property(e => e.Date)
                 .HasColumnType("datetime")
                 .HasColumnName("date");
@@ -117,6 +123,9 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.EndTime)
                 .HasMaxLength(50)
                 .HasColumnName("end_time");
+            entity.Property(e => e.Notes)
+                .HasMaxLength(255)
+                .HasColumnName("notes");
             entity.Property(e => e.StartTime)
                 .HasMaxLength(50)
                 .HasColumnName("start_time");

@@ -14,6 +14,11 @@ namespace CommunityConnection.Entities.DTO
         public string? StartTime { get; set; }
         public string? EndTime { get; set; }
         public int? Status { get; set; }
+        public DateTime? ActualStartTime { get; set; }
+
+        public DateTime? ActualEndTime { get; set; }
+
+        public string? Notes { get; set; }
     }
 
 }

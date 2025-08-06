@@ -18,6 +18,8 @@ namespace CommunityConnection.Entities.DTO
         public string? EndTime { get; set; }
 
         public int? Status { get; set; }
+
+
     }
 
 }

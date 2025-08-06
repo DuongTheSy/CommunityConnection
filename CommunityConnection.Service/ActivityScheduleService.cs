@@ -116,8 +116,19 @@ namespace CommunityConnection.Service
             if (dto.Description != "")
                 schedule.Description = dto.Description;
 
-            if (dto.Date == null)
+            if (dto.Date > DateTime.Now)
+            {
                 schedule.Date = dto.Date;
+            }
+            else
+            {
+                return (new ApiResponse<ActivitySchedule>
+                {
+                    status = false,
+                    message = "Ngày hoàn thành dự kiến phải lớn hơn ngày hiện tại",
+                    data = null
+                });
+            }
 
             if (dto.StartTime != "")
                 schedule.StartTime = dto.StartTime;
@@ -127,6 +138,12 @@ namespace CommunityConnection.Service
 
             if (dto.Status.HasValue)
                 schedule.Status = dto.Status;
+            if(dto.ActualStartTime != null)
+                schedule.ActualStartTime = dto.ActualStartTime;
+            if(dto.ActualEndTime != null)
+                schedule.ActualEndTime = dto.ActualEndTime;
+            if (dto.Notes != "")
+                schedule.Notes = dto.Notes;
 
             await _repository.UpdateAsync(schedule);
 

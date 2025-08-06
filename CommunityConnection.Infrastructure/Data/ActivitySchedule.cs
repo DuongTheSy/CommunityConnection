@@ -21,6 +21,12 @@ public partial class ActivitySchedule
 
     public int? Status { get; set; }
 
+    public DateTime? ActualStartTime { get; set; }
+
+    public DateTime? ActualEndTime { get; set; }
+
+    public string? Notes { get; set; }
+
     public virtual ICollection<ActivitySession> ActivitySessions { get; set; } = new List<ActivitySession>();
 
     public virtual ReminderNotification? ReminderNotification { get; set; }
