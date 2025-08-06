@@ -35,12 +35,6 @@ public partial class ThesisContext : DbContext
 
     public virtual DbSet<ConnectionRequest> ConnectionRequests { get; set; }
 
-    public virtual DbSet<DiscussionBoard> DiscussionBoards { get; set; }
-
-    public virtual DbSet<DiscussionComment> DiscussionComments { get; set; }
-
-    public virtual DbSet<Drawing> Drawings { get; set; }
-
     public virtual DbSet<Field> Fields { get; set; }
 
     public virtual DbSet<Goal> Goals { get; set; }
@@ -49,11 +43,7 @@ public partial class ThesisContext : DbContext
 
     public virtual DbSet<JoinRequest> JoinRequests { get; set; }
 
-    public virtual DbSet<LevelQuiz> LevelQuizzes { get; set; }
-
     public virtual DbSet<Message> Messages { get; set; }
-
-    public virtual DbSet<Method> Methods { get; set; }
 
     public virtual DbSet<Question> Questions { get; set; }
 
@@ -70,10 +60,6 @@ public partial class ThesisContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<SubGoal> SubGoals { get; set; }
-
-    public virtual DbSet<SubGoalActivity> SubGoalActivities { get; set; }
-
-    public virtual DbSet<TextNote> TextNotes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -213,11 +199,9 @@ public partial class ThesisContext : DbContext
 
         modelBuilder.Entity<CommentVote>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__comment___3213E83F2A150D05");
+            entity.HasKey(e => e.Id).HasName("PK__comment___3213E83F1E0DBCFD");
 
             entity.ToTable("comment_vote");
-
-            entity.HasIndex(e => new { e.UserId, e.DiscussionCommentId }, "uq_user_vote_comment").IsUnique();
 
             entity.HasIndex(e => new { e.UserId, e.MessageId }, "uq_user_vote_message").IsUnique();
 
@@ -232,10 +216,6 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.VoteType)
                 .HasMaxLength(20)
                 .HasColumnName("vote_type");
-
-            entity.HasOne(d => d.DiscussionComment).WithMany(p => p.CommentVotes)
-                .HasForeignKey(d => d.DiscussionCommentId)
-                .HasConstraintName("fk_comment_vote_comment");
 
             entity.HasOne(d => d.Message).WithMany(p => p.CommentVotes)
                 .HasForeignKey(d => d.MessageId)
@@ -358,96 +338,6 @@ public partial class ThesisContext : DbContext
                 .HasConstraintName("fk_conn_req_sender");
         });
 
-        modelBuilder.Entity<DiscussionBoard>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__discussi__3213E83F1BD1CB7C");
-
-            entity.ToTable("discussion_board");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ChannelId).HasColumnName("channel_id");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.CreatorUserId).HasColumnName("creator_user_id");
-            entity.Property(e => e.Status)
-                .HasDefaultValue(true)
-                .HasColumnName("status");
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .HasColumnName("title");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-
-            entity.HasOne(d => d.Channel).WithMany(p => p.DiscussionBoards)
-                .HasForeignKey(d => d.ChannelId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_discussion_board_channel");
-
-            entity.HasOne(d => d.CreatorUser).WithMany(p => p.DiscussionBoards)
-                .HasForeignKey(d => d.CreatorUserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_discussion_board_creator");
-        });
-
-        modelBuilder.Entity<DiscussionComment>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__discussi__3213E83F07E0D0A2");
-
-            entity.ToTable("discussion_comment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BoardId).HasColumnName("board_id");
-            entity.Property(e => e.Content).HasColumnName("content");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.HelpfulVotes)
-                .HasDefaultValue(0)
-                .HasColumnName("helpful_votes");
-            entity.Property(e => e.UnhelpfulVotes)
-                .HasDefaultValue(0)
-                .HasColumnName("unhelpful_votes");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-
-            entity.HasOne(d => d.Board).WithMany(p => p.DiscussionComments)
-                .HasForeignKey(d => d.BoardId)
-                .HasConstraintName("fk_discussion_comment_board");
-        });
-
-        modelBuilder.Entity<Drawing>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__drawing__3213E83F645339C1");
-
-            entity.ToTable("drawing");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Data).HasColumnName("data");
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .HasColumnName("title");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Drawings)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("fk_drawing_user");
-        });
-
         modelBuilder.Entity<Field>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__field__3213E83FEE77F402");
@@ -553,26 +443,6 @@ public partial class ThesisContext : DbContext
                 .HasConstraintName("fk_join_req_sender");
         });
 
-        modelBuilder.Entity<LevelQuiz>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__level_qu__3213E83FB299A4CB");
-
-            entity.ToTable("level_quiz");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.LevelName)
-                .HasMaxLength(100)
-                .HasColumnName("level_name");
-            entity.Property(e => e.QuizId).HasColumnName("quiz_id");
-            entity.Property(e => e.ScoreLower).HasColumnName("score_lower");
-            entity.Property(e => e.ScoreUpper).HasColumnName("score_upper");
-
-            entity.HasOne(d => d.Quiz).WithMany(p => p.LevelQuizzes)
-                .HasForeignKey(d => d.QuizId)
-                .HasConstraintName("fk_level_quiz_quiz");
-        });
-
         modelBuilder.Entity<Message>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__message__3213E83F11297D0C");
@@ -595,26 +465,6 @@ public partial class ThesisContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Messages)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("fk_message_user");
-        });
-
-        modelBuilder.Entity<Method>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__method__3213E83F0456D650");
-
-            entity.ToTable("method");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.GoalId).HasColumnName("goal_id");
-            entity.Property(e => e.MethodName)
-                .HasMaxLength(255)
-                .HasColumnName("method_name");
-            entity.Property(e => e.Roadmap).HasColumnName("roadmap");
-            entity.Property(e => e.Step).HasColumnName("step");
-
-            entity.HasOne(d => d.Goal).WithMany(p => p.Methods)
-                .HasForeignKey(d => d.GoalId)
-                .HasConstraintName("fk_method_goal");
         });
 
         modelBuilder.Entity<Question>(entity =>
@@ -809,6 +659,7 @@ public partial class ThesisContext : DbContext
             entity.ToTable("sub_goal");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Activity).HasColumnName("activity");
             entity.Property(e => e.CompletionDate)
                 .HasColumnType("datetime")
                 .HasColumnName("completion_date");
@@ -824,59 +675,6 @@ public partial class ThesisContext : DbContext
             entity.HasOne(d => d.Goal).WithMany(p => p.SubGoals)
                 .HasForeignKey(d => d.GoalId)
                 .HasConstraintName("fk_sub_goal");
-        });
-
-        modelBuilder.Entity<SubGoalActivity>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__sub_goal__3213E83F51BE4D81");
-
-            entity.ToTable("sub_goal_activity");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Activity).HasColumnName("activity");
-            entity.Property(e => e.IsCompleted)
-                .HasDefaultValue(false)
-                .HasColumnName("is_completed");
-            entity.Property(e => e.OrderIndex)
-                .HasDefaultValue(0)
-                .HasColumnName("order_index");
-            entity.Property(e => e.SubGoalId).HasColumnName("sub_goal_id");
-
-            entity.HasOne(d => d.SubGoal).WithMany(p => p.SubGoalActivities)
-                .HasForeignKey(d => d.SubGoalId)
-                .HasConstraintName("fk_activity_sub_goal");
-        });
-
-        modelBuilder.Entity<TextNote>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__text_not__3213E83FE2C90D11");
-
-            entity.ToTable("text_note");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BackgroundColor)
-                .HasMaxLength(20)
-                .HasColumnName("background_color");
-            entity.Property(e => e.Content).HasColumnName("content");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.TextColor)
-                .HasMaxLength(20)
-                .HasColumnName("text_color");
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .HasColumnName("title");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-
-            entity.HasOne(d => d.User).WithMany(p => p.TextNotes)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("fk_text_note_user");
         });
 
         modelBuilder.Entity<User>(entity =>

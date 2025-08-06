@@ -20,6 +20,7 @@ namespace CommunityConnection.Infrastructure.Repository
         #endregion
 
         Task DeleteAsync(Community community);
+
     }
 
 }

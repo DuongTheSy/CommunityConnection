@@ -15,6 +15,7 @@ namespace CommunityConnection.Service
         Task<ListChannelResponse> GetChannelsForUserAsync(long idToken, long communityId);
         Task<ApiResponse<ChannelDto>> CreateChannelFromOperatorOrOwnerAsync(ChannelCreateDto dto, long userId);
 
+        Task<bool> AddUserToDefaultChatChannelAsync(long communityId, long userId);
     }
 
 }

@@ -13,7 +13,7 @@ namespace CommunityConnection.Service
     public interface ISubGoalService
     {
         Task<SubGoalDto> CreateSubGoalAsync(SubGoalViewModel request, long id_user);
-        Task<List<SubGoalDto>> CreateSubGoalsWithActivitiesAsync(List<CreateSubGoalWithActivitiesRequest> requests);
+        //Task<List<SubGoalDto>> CreateSubGoalsWithActivitiesAsync(List<CreateSubGoalWithActivitiesRequest> requests);
         Task<bool> DeleteSubGoalAsync(long id);
         Task<IEnumerable<SubGoalDto>> GetSubGoalsByGoalIdAsync(long goalId);
         Task<SubGoal> UpdateSubGoalAsync(long id, UpdateSubGoalDto dto);

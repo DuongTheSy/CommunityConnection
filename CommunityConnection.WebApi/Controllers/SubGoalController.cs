@@ -114,33 +114,33 @@ namespace CommunityConnection.WebApi.Controllers
                 data = result
             });
         }
-        [HttpPost("create-full")]
-        public async Task<IActionResult> CreateFull([FromBody] List<CreateSubGoalWithActivitiesRequest> requests)
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Unauthorized(new ApiResponse<StatusResponse>
-                {
-                    status = true,
-                    message = "Thành công",
-                    data = new StatusResponse
-                    {
-                        status = false,
-                        message = "Bạn cần đăng nhập"
+        //[HttpPost("create-full")]
+        //public async Task<IActionResult> CreateFull([FromBody] List<CreateSubGoalWithActivitiesRequest> requests)
+        //{
+        //    if (!User.Identity.IsAuthenticated)
+        //    {
+        //        return Unauthorized(new ApiResponse<StatusResponse>
+        //        {
+        //            status = true,
+        //            message = "Thành công",
+        //            data = new StatusResponse
+        //            {
+        //                status = false,
+        //                message = "Bạn cần đăng nhập"
 
-                    }
-                });
-            }
+        //            }
+        //        });
+        //    }
 
-            var result = await _subGoalService.CreateSubGoalsWithActivitiesAsync(requests);
+        //    var result = await _subGoalService.CreateSubGoalsWithActivitiesAsync(requests);
 
-            return Ok(new
-            {
-                status = true,
-                message = "Thành công",
-                data = result
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        status = true,
+        //        message = "Thành công",
+        //        data = result
+        //    });
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubGoal(long id)

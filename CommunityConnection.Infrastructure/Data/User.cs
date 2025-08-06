@@ -53,10 +53,6 @@ public partial class User
 
     public virtual ICollection<ConnectionRequest> ConnectionRequestSenderUsers { get; set; } = new List<ConnectionRequest>();
 
-    public virtual ICollection<DiscussionBoard> DiscussionBoards { get; set; } = new List<DiscussionBoard>();
-
-    public virtual ICollection<Drawing> Drawings { get; set; } = new List<Drawing>();
-
     public virtual ICollection<Goal> Goals { get; set; } = new List<Goal>();
 
     public virtual ICollection<JoinRequest> JoinRequestReceiverUsers { get; set; } = new List<JoinRequest>();
@@ -70,8 +66,6 @@ public partial class User
     public virtual ICollection<ReminderNotification> ReminderNotifications { get; set; } = new List<ReminderNotification>();
 
     public virtual Role? Role { get; set; }
-
-    public virtual ICollection<TextNote> TextNotes { get; set; } = new List<TextNote>();
 
     public virtual ICollection<Field> Fields { get; set; } = new List<Field>();
 }

@@ -15,12 +15,15 @@ namespace CommunityConnection.Service
     {
         private readonly ICommunityRepository _repository;
         private readonly IChannelService _channelService;
+        private readonly IChannelRepository _channelRepository;
 
-
-        public CommunityService(ICommunityRepository repository, IChannelService channelService)
+        private readonly IJoinRequestRepository _joinRequestRepo;
+        public CommunityService(ICommunityRepository repository, IChannelService channelService, IJoinRequestRepository joinRequestRepo, IChannelRepository channelRepository)
         {
             _repository = repository;
             _channelService = channelService;
+            _joinRequestRepo = joinRequestRepo;
+            _channelRepository = channelRepository;
         }
 
         public async Task<ApiResponse<ListCommunityResponse>> GetUserCommunities(long userId)
@@ -182,5 +185,146 @@ namespace CommunityConnection.Service
             };
         }
 
+        public async Task<ApiResponse<string>> JoinCommunityAsyncv2(long userId, long communityId)
+        {
+            var community = await _repository.GetByIdAsync(communityId);
+            if (community == null)
+            {
+                return new ApiResponse<string> { status = false, message = "Cộng đồng không tồn tại." };
+            }
+
+            var isMember = await _repository.IsMemberAsync(userId, communityId);
+            if (isMember)
+            {
+                return new ApiResponse<string> { status = false, message = "Bạn đã là thành viên cộng đồng." };
+            }
+
+            if (community.AccessStatus == 1) // Công khai
+            {
+                // Thêm vào CommunityMember
+                await _repository.AddMemberAsync(new CommunityMember
+                {
+                    UserId = userId,
+                    CommunityId = communityId,
+                    Role = 1 // Thành viên thông thường
+                });
+
+                // Lấy tất cả các kênh trong cộng đồng
+                var channels = await _channelRepository.GetChannelsByCommunityAsync(communityId);
+
+                // Thêm user vào tất cả các kênh
+                var channelMembers = channels.Select(c => new ChannelMember
+                {
+                    UserId = userId,
+                    ChannelId = c.Id,
+                    Role = 1
+                }).ToList();
+
+                await _channelRepository.AddChannelMembersAsync(channelMembers);
+
+                return new ApiResponse<string> { status = true, message = "Tham gia cộng đồng thành công." };
+            }
+            else // Riêng tư
+            {
+                bool exists = await _joinRequestRepo.ExistsAsync(userId, communityId);
+                if (exists)
+                {
+                    return new ApiResponse<string> { status = false, message = "Bạn đã gửi yêu cầu tham gia." };
+                }
+
+                await _joinRequestRepo.AddAsync(new JoinRequest
+                {
+                    SenderUserId = userId,
+                    CommunityId = communityId,
+                    Status = 0, // hoặc 0
+                    CreatedAt = DateTime.UtcNow
+                });
+
+                return new ApiResponse<string> { status = true, message = "Yêu cầu tham gia đã được gửi. Vui lòng chờ duyệt." };
+            }
+        }
+        public async Task<ApiResponse<List<JoinRequest>>> GetJoinRequestsByCommunityIdAsync(long communityId, long userId)
+        {
+            var member = await _repository.GetMemberAsync(communityId, userId);
+            if (member == null || ( member.Role != 0 && member.Role != 8)) // không là quản trị viên hoặc chủ sở hữu
+            {
+                return new ApiResponse<List<JoinRequest>>
+                {
+                    status = false,
+                    message = "Chỉ quản trị viên mới xem được danh sách yêu cầu tham gia",
+                    data = null
+                };
+            }
+            return new ApiResponse<List<JoinRequest>>
+            {
+                status = true,
+                message = "Lấy danh sách thành công",
+                data = await _joinRequestRepo.GetJoinRequestsByCommunityIdAsync(communityId)
+            };
+        }
+
+        public async Task<ApiResponse<bool>> HandleJoinRequestAsync(long idRequest, long userId, bool isApproved)
+        {
+            var joinRequest = await _joinRequestRepo.GetJoinRequestByIdAsync(idRequest);
+            if (joinRequest == null)
+            {
+                return new ApiResponse<bool>
+                {
+                    status = false,
+                    message = "Yêu cầu tham gia không tồn tại",
+                    data = false
+                };
+            }
+
+            var user_handle = await _repository.GetMemberAsync(joinRequest.CommunityId, userId);
+            if (user_handle == null || (user_handle.Role != 0 && user_handle.Role != 8)) // không là quản trị viên hoặc chủ sở hữu
+            {
+                return new ApiResponse<bool>
+                {
+                    status = false,
+                    message = "Chỉ quản trị viên mới có quyền Reply yêu cầu tham gia",
+                    data = false
+                };
+            }
+            // thêm thành viên vào coocngj đồng riêng tư
+            if (isApproved)
+            {
+                var exists = await _repository.IsMemberAsync(joinRequest.SenderUserId, joinRequest.CommunityId);
+                if (exists)
+                {
+                    return new ApiResponse<bool>
+                    {
+                        status = false,
+                        message = " Người dùng đã là thành viên của cộng đồng này",
+                        data = false
+                    };
+                }
+                // Thêm người dùng vào CommunityMember
+                await _repository.AddMemberAsync(new CommunityMember
+                {
+                    UserId = joinRequest.SenderUserId,
+                    CommunityId = joinRequest.CommunityId,
+                    Role = 1
+                });
+                //// Thêm người dùng vào Channel Default
+                var channelDefault = await _channelRepository.GetDefaultChannelAsync(joinRequest.CommunityId);
+            
+               await _channelRepository.AddChannelMemberAsync(new ChannelMember
+                {
+                    UserId = joinRequest.SenderUserId,
+                    ChannelId = channelDefault.Id,
+                    Role = 1
+                });
+            }
+
+            bool result = await _joinRequestRepo.DeleteJoinRequestAsync(idRequest);
+            return new ApiResponse<bool>
+            {
+                status = result,
+                message = (result) ? "Thành công" : "Thất bại",
+                data = result
+            };
+        }
+       
     }
 }

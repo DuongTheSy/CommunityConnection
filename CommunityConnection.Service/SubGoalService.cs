@@ -5,6 +5,7 @@ using CommunityConnection.Infrastructure.Data;
 using CommunityConnection.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,8 @@ namespace CommunityConnection.Service
                 Title = request.Title,
                 Description = request.Description,
                 CompletionDate = request.CompletionDate,
-                OrderIndex = request.OrderIndex
+                OrderIndex = request.OrderIndex,
+                Activity = request.Activity
             };
 
             var created = await _repository.CreateAsync(subGoal);
@@ -42,45 +44,42 @@ namespace CommunityConnection.Service
                 Title = created.Title,
                 Description = created.Description,
                 CompletionDate = created.CompletionDate,
-                OrderIndex = (int)created.OrderIndex
+                OrderIndex = (int)created.OrderIndex,
+                Activity = created.Activity
             };
         }
-        public async Task<List<SubGoalDto>> CreateSubGoalsWithActivitiesAsync(List<CreateSubGoalWithActivitiesRequest> requests)
-        {
-            var result = new List<SubGoalDto>();
+        //public async Task<List<SubGoalDto>> CreateSubGoalsWithActivitiesAsync(List<CreateSubGoalWithActivitiesRequest> requests)
+        //{
+        //    var result = new List<SubGoalDto>();
 
-            foreach (var request in requests)
-            {
-                var subGoal = new SubGoal
-                {
-                    GoalId = request.GoalId,
-                    Title = request.Title,
-                    Description = request.Description,
-                    CompletionDate = request.CompletionDate,
-                    OrderIndex = request.OrderIndex,
-                    SubGoalActivities = request.Activities.Select((act, index) => new SubGoalActivity
-                    {
-                        Activity = act,
-                        OrderIndex = index + 1,
-                        IsCompleted = false
-                    }).ToList()
-                };
+        //    foreach (var request in requests)
+        //    {
+        //        var subGoal = new SubGoal
+        //        {
+        //            GoalId = request.GoalId,
+        //            Title = request.Title,
+        //            Description = request.Description,
+        //            CompletionDate = request.CompletionDate,
+        //            OrderIndex = request.OrderIndex,
+        //            Activity = request.Activities
+        //        };
 
-                var created = await _repository.CreateFullAsync(subGoal);
+        //        var created = await _repository.CreateFullAsync(subGoal);
 
-                result.Add(new SubGoalDto
-                {
-                    Id = created.Id,
-                    GoalId = created.GoalId,
-                    Title = created.Title,
-                    Description = created.Description,
-                    CompletionDate = created.CompletionDate,
-                    OrderIndex = created.OrderIndex,
-                });
-            }
+        //        result.Add(new SubGoalDto
+        //        {
+        //            Id = created.Id,
+        //            GoalId = created.GoalId,
+        //            Title = created.Title,
+        //            Description = created.Description,
+        //            CompletionDate = created.CompletionDate,
+        //            OrderIndex = created.OrderIndex,
+        //            Activity = created.Activity
+        //        });
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
         public async Task<bool> DeleteSubGoalAsync(long id)
         {
             return await _repository.DeleteSubGoalAsync(id);
@@ -99,6 +98,7 @@ namespace CommunityConnection.Service
                 Description = s.Description,
                 CompletionDate = s.CompletionDate,
                 OrderIndex = s.OrderIndex,
+                Activity = s.Activity
             });
     }
         public async Task<SubGoal> UpdateSubGoalAsync(long id, UpdateSubGoalDto dto)

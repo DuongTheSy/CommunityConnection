@@ -15,5 +15,6 @@ namespace CommunityConnection.Entities.DTO
         public string? Description { get; set; }
         public DateTime? CompletionDate { get; set; }
         public int? OrderIndex { get; set; }
+        public string? Activity { get; set; }
     }
 }

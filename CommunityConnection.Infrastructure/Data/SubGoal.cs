@@ -17,7 +17,7 @@ public partial class SubGoal
 
     public DateTime? CompletionDate { get; set; }
 
-    public virtual Goal Goal { get; set; } = null!;
+    public string? Activity { get; set; }
 
-    public virtual ICollection<SubGoalActivity> SubGoalActivities { get; set; } = new List<SubGoalActivity>();
+    public virtual Goal Goal { get; set; } = null!;
 }

@@ -16,5 +16,8 @@ namespace CommunityConnection.Service
         Task<ApiResponse<CommunityDto>> CreateCommunityAsync(long userId, CommunityCreateDto dto);
         Task<ApiResponse<Community>> UpdateCommunityAsync(long communityId, long userId, UpdateCommunityDto dto);
         Task<ApiResponse<string>> DeleteCommunityAsync(long communityId, long userId);
+        Task<ApiResponse<string>> JoinCommunityAsyncv2(long userId, long communityId);
+        Task<ApiResponse<List<JoinRequest>>> GetJoinRequestsByCommunityIdAsync(long communityId, long userId);
+        Task<ApiResponse<bool>> HandleJoinRequestAsync(long idRequest, long userId, bool isApproved);
     }
 }

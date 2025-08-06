@@ -17,8 +17,6 @@ public partial class CommentVote
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual DiscussionComment? DiscussionComment { get; set; }
-
     public virtual Message? Message { get; set; }
 
     public virtual User User { get; set; } = null!;

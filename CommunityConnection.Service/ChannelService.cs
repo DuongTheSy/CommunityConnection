@@ -92,6 +92,27 @@ namespace CommunityConnection.Service
             };
         }
 
+        // Thêm thành viên vào kênh chat chung
+        public async Task<bool> AddUserToDefaultChatChannelAsync(long communityId, long userId)
+        {
+            // 1. Tìm kênh "Kênh chát chung"
+            var channel = await _repo.GetDefaultChannelAsync(communityId);
+            if (channel == null)
+                return false;
+            // kiêm tra xem người dùng đã là thành viên của kênh này chưa
+            var isMember = await _repo.IsUserInChannelAsync(channel.Id, userId);
+            if (isMember)
+            {
+                return false; // Người dùng đã là thành viên
+            }
+            await _repo.AddChannelMemberAsync(new ChannelMember
+            {
+                ChannelId = channel.Id,
+                UserId = userId,
+                Role = 1 // Role = 1 là thành viên bình thường
+            });
+            return true;
+        }
     }
 
 }

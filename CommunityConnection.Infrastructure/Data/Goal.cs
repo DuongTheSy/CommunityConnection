@@ -23,8 +23,6 @@ public partial class Goal
 
     public virtual ICollection<GoalNote> GoalNotes { get; set; } = new List<GoalNote>();
 
-    public virtual ICollection<Method> Methods { get; set; } = new List<Method>();
-
     public virtual ICollection<SubGoal> SubGoals { get; set; } = new List<SubGoal>();
 
     public virtual User User { get; set; } = null!;

@@ -13,6 +13,7 @@ namespace CommunityConnection.Common
         public string? Description { get; set; }
         public DateTime? CompletionDate { get; set; }
         public int OrderIndex { get; set; } = 0;
-        public List<string> Activities { get; set; } = new();
+        public string? Activities { get; set; }
+
     }
 }

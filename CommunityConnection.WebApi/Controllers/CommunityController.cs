@@ -213,5 +213,63 @@ namespace CommunityConnection.WebApi.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             return userIdClaim != null ? long.Parse(userIdClaim.Value) : 0;
         }
+
+        [HttpPost("{communityId}/joinV2")]
+        public async Task<IActionResult> JoinCommunityV2(long communityId)
+        {
+            // Giả sử lấy userId từ token claim
+            var userId = GetUserIdFromToken();
+            if (userId == 0)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
+
+            var result = await _service.JoinCommunityAsyncv2(userId, communityId);
+    
+            return Ok(result);
+        }
+        [HttpGet("by-community/{communityId}")]
+        // Danh sách các yêu cầu tham gia cộng đồng theo communityId
+        public async Task<IActionResult> GetByCommunityId(long communityId)
+        {
+            var userId = GetUserIdFromToken();
+            if (userId == 0)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
+            var result = await _service.GetJoinRequestsByCommunityIdAsync(communityId, userId);
+            return Ok(result);
+        }
+        [HttpPost("handle-join-request")]
+        public async Task<IActionResult> HandleJoinRequest([FromBody] HandleJoinRequestDto dto)
+        {
+            // Lấy userId từ token
+            long approverUserId = GetUserIdFromToken();
+            if (approverUserId == 0)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
+            var result = await _service.HandleJoinRequestAsync(dto.JoinRequestId, approverUserId, dto.IsApproved);
+
+            if (!result.status)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 }

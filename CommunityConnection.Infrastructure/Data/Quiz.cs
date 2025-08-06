@@ -27,8 +27,6 @@ public partial class Quiz
 
     public virtual Channel? Channel { get; set; }
 
-    public virtual ICollection<LevelQuiz> LevelQuizzes { get; set; } = new List<LevelQuiz>();
-
     public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 
     public virtual ICollection<QuizAttempt> QuizAttempts { get; set; } = new List<QuizAttempt>();

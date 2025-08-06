@@ -17,8 +17,6 @@ public partial class Channel
 
     public virtual Community Community { get; set; } = null!;
 
-    public virtual ICollection<DiscussionBoard> DiscussionBoards { get; set; } = new List<DiscussionBoard>();
-
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public virtual ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();

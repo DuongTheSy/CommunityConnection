@@ -23,7 +23,7 @@ namespace CommunityConnection.Infrastructure.Repository
             return channel;
         }
 
-        public async Task AddMemberAsync(ChannelMember member)
+        public async Task AddChannelMemberAsync(ChannelMember member)
         {
             _db.ChannelMembers.Add(member);
             await _db.SaveChangesAsync();
@@ -68,6 +68,22 @@ namespace CommunityConnection.Infrastructure.Repository
             _db.ChannelMembers.AddRange(members);
             await _db.SaveChangesAsync();
         }
-
+        public async Task<List<Channel>> GetChannelsByCommunityAsync(long communityId)
+        {
+            return await _db.Channels
+                .Where(c => c.CommunityId == communityId)
+                .ToListAsync();
+        }
+        public async Task<Channel?> GetDefaultChannelAsync(long communityId)
+        {
+            return await _db.Channels
+                .Where(c => c.CommunityId == communityId && c.ChannelName == "Kênh chat chung")
+                .FirstOrDefaultAsync();
+        }
+        public async Task<bool> IsUserInChannelAsync(long channelId, long userId)
+        {
+            return await _db.ChannelMembers
+                .AnyAsync(cm => cm.ChannelId == channelId && cm.UserId == userId);
+        }
     }
 }
