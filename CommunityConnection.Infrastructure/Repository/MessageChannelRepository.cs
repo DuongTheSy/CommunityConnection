@@ -1,4 +1,5 @@
 ﻿using CommunityConnection.Common;
+using CommunityConnection.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,19 +13,19 @@ namespace CommunityConnection.Infrastructure.Repository
     {
         private readonly ThesisContext _db;
 
-        public MessageChannelRepository (ThesisContext context)
+        public MessageChannelRepository(ThesisContext context)
         {
             _db = context;
         }
 
-        public async Task<List<MessageResponse>> GetMessagesAsync(long userId, int channelId)
+        public async Task<List<MessageResponse>> GetMessagesAsync(long userId, long channelId)
         {
 
             // Check if the user is a member of the community
             var isMember = await _db.ChannelMembers
                 .Where(c => c.ChannelId == channelId && userId == c.UserId)
                 .AnyAsync(m => m.UserId == userId);
-            if(!isMember)
+            if (!isMember)
             {
                 return null;
             }
@@ -60,5 +61,6 @@ namespace CommunityConnection.Infrastructure.Repository
             await _db.SaveChangesAsync();
             return message;
         }
+
     }
 }

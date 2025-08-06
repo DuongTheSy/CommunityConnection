@@ -13,10 +13,12 @@ namespace CommunityConnection.Service
     public class MessageService : IMessageService
     {
         private readonly IMessageChannelRepository _repository;
+        private readonly IChannelRepository _channelRepository;
 
-        public MessageService(IMessageChannelRepository repository)
+        public MessageService(IMessageChannelRepository repository, IChannelRepository channelRepository)
         {
             _repository = repository;
+            _channelRepository = channelRepository;
         }
         public async Task<ApiResponse<MessageChannelResponse>> GetMessagesAsync(long userId, int channelId)
         {
@@ -72,6 +74,31 @@ namespace CommunityConnection.Service
                 SentAt = saved.SentAt
             };
         }
-
+        public async Task<ApiResponse<MessageChannelResponse>> GetPrivateChatMessagesAsync(long userId1, long userId2)
+        {
+            try
+            {
+                var channelId = await _channelRepository.GetPrivateRoomChannelIdAsync(userId1, userId2);
+                var messages = await _repository.GetMessagesAsync(userId1, channelId);
+                return new ApiResponse<MessageChannelResponse>
+                {
+                    status = true,
+                    message = "Lấy tin nhắn thành công",
+                    data = new MessageChannelResponse
+                    {
+                        ChannelId = channelId,
+                        Messages = messages
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<MessageChannelResponse>
+                {
+                    status = false,
+                    message = ex + "",
+                };
+            }
+        }
     }
 }

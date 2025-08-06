@@ -11,10 +11,12 @@ namespace CommunityConnection.WebApi.Controllers
     public class Connection : ControllerBase
     {
         private readonly IConnectionRequestService _service;
+        private readonly IChannelService _channelService;
 
-        public Connection(IConnectionRequestService service)
+        public Connection(IConnectionRequestService service, IChannelService channelService)
         {
             _service = service;
+            _channelService = channelService;
         }
 
         [HttpPost("send-request")]

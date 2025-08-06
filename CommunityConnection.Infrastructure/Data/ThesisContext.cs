@@ -173,6 +173,7 @@ public partial class ThesisContext : DbContext
 
             entity.HasOne(d => d.Community).WithMany(p => p.Channels)
                 .HasForeignKey(d => d.CommunityId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_channel_community");
         });
 
@@ -419,7 +420,6 @@ public partial class ThesisContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.Message).HasColumnName("message");
             entity.Property(e => e.ReceiverUserId).HasColumnName("receiver_user_id");
-            entity.Property(e => e.ResponseMessage).HasColumnName("response_message");
             entity.Property(e => e.SenderUserId).HasColumnName("sender_user_id");
             entity.Property(e => e.Status)
                 .HasDefaultValue(1)

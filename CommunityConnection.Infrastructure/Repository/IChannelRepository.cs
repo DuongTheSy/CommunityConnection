@@ -19,5 +19,7 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<List<Channel>> GetChannelsByCommunityAsync(long communityId);
         Task<Channel?> GetDefaultChannelAsync(long communityId);
         Task<bool> IsUserInChannelAsync(long channelId, long userId);
+        // lấy ra channelID của roomchat
+        Task<long> GetPrivateRoomChannelIdAsync(long user1Id, long user2Id);
     }   
 }

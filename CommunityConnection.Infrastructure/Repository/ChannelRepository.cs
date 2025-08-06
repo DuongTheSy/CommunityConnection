@@ -16,6 +16,8 @@ namespace CommunityConnection.Infrastructure.Repository
             _db = db;
         }
 
+
+        // create 1 channel
         public async Task<Channel> CreateChannelAsync(Channel channel)
         {
             _db.Channels.Add(channel);
@@ -23,11 +25,13 @@ namespace CommunityConnection.Infrastructure.Repository
             return channel;
         }
 
+        // create 1 channel member
         public async Task AddChannelMemberAsync(ChannelMember member)
         {
             _db.ChannelMembers.Add(member);
             await _db.SaveChangesAsync();
         }
+
         public async Task<ListChannelResponse> GetChannelsOfCommunityByUserAsync(long userId, long communityId)
         {
             var channels = await _db.ChannelMembers
@@ -84,6 +88,20 @@ namespace CommunityConnection.Infrastructure.Repository
         {
             return await _db.ChannelMembers
                 .AnyAsync(cm => cm.ChannelId == channelId && cm.UserId == userId);
+        }
+
+        public async Task<long> GetPrivateRoomChannelIdAsync(long user1Id, long user2Id)
+        {
+            var privateChannel = await _db.Channels
+                .Where(c => c.CommunityId == null)
+                .Where(c =>
+                    c.ChannelMembers.Any(cm => cm.UserId == user1Id) &&
+                    c.ChannelMembers.Any(cm => cm.UserId == user2Id)
+                )
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync();
+
+            return privateChannel;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace CommunityConnection.Entities.DTO
         public long Id { get; set; }
         public string ChannelName { get; set; } = null!;
         public string? Description { get; set; }
-        public long CommunityId { get; set; }
+        public long? CommunityId { get; set; }
     }
 
 }

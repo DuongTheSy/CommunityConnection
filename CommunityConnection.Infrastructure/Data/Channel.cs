@@ -7,7 +7,7 @@ public partial class Channel
 {
     public long Id { get; set; }
 
-    public long CommunityId { get; set; }
+    public long? CommunityId { get; set; }
 
     public string ChannelName { get; set; } = null!;
 
@@ -15,7 +15,7 @@ public partial class Channel
 
     public virtual ICollection<ChannelMember> ChannelMembers { get; set; } = new List<ChannelMember>();
 
-    public virtual Community Community { get; set; } = null!;
+    public virtual Community? Community { get; set; }
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 

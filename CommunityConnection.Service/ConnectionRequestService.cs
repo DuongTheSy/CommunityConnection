@@ -13,10 +13,12 @@ namespace CommunityConnection.Service
     public class ConnectionRequestService : IConnectionRequestService
     {
         private readonly IConnectionRequestRepository _repo;
+        private readonly IChannelRepository _channelRepository;
 
-        public ConnectionRequestService(IConnectionRequestRepository repo)
+        public ConnectionRequestService(IConnectionRequestRepository repo, IChannelRepository channelRepository)
         {
             _repo = repo;
+            _channelRepository = channelRepository;
         }
 
         public async Task<ApiResponse<bool>> SendConnectionRequestAsync(long senderUserId, SendConnectionRequestDto dto)
@@ -97,6 +99,11 @@ namespace CommunityConnection.Service
             request.UpdatedAt = DateTime.UtcNow;
 
             var result = await _repo.UpdateConnectionRequestAsync(request);
+            if (result && dto.IsApproved)
+            {
+                // Tạo room chat nếu yêu cầu được chấp nhận
+                await CreateChatRoomFromChannel(request.SenderUserId, request.ReceiverUserId);
+            }
 
             return new ApiResponse<bool>
             {
@@ -106,6 +113,39 @@ namespace CommunityConnection.Service
             };
         }
 
+        public async Task<ApiResponse<bool>> CreateChatRoomFromChannel(long userId1, long userId2)
+        {
+            var channel = new Channel
+            {
+                ChannelName = $"{userId1} + {userId2}",
+                Description = "RoomChat",
+                CommunityId = null
+            };
+            var newChannel = await _channelRepository.CreateChannelAsync(channel);
+            
+            var members = new List<ChannelMember>
+            {
+                new ChannelMember
+                {
+                    ChannelId = newChannel.Id,
+                    UserId = userId1,
+                    Role = 5 
+                },
+                new ChannelMember
+                {
+                    ChannelId = newChannel.Id,
+                    UserId = userId2,
+                    Role = 5 
+                }
+            };
+            await _channelRepository.AddChannelMembersAsync(members);
+            return new ApiResponse<bool>
+            {
+                status = true,
+                message = $"Tạo roomchat cho {userId1}, {userId2} thành công",
+                data = true
+            };
+        }
     }
 
 }

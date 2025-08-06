@@ -15,8 +15,6 @@ public partial class JoinRequest
 
     public DateTime? UpdatedAt { get; set; }
 
-    public string? ResponseMessage { get; set; }
-
     public long SenderUserId { get; set; }
 
     public long CommunityId { get; set; }
