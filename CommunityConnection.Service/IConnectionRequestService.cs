@@ -1,5 +1,6 @@
 ﻿using CommunityConnection.Common;
 using CommunityConnection.Entities.DTO;
+using CommunityConnection.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace CommunityConnection.Service
 
         // tạo room chat 2 người dùng từ kênh với communityId == null
         Task<ApiResponse<bool>> CreateChatRoomFromChannel(long userId1, long userId2);
+        // lấy danh sách yêu cầu kết nối đã nhận
+        Task<List<ConnectionRequest>> GetReceivedRequestsAsync(long receiverUserId);
 
     }
 }

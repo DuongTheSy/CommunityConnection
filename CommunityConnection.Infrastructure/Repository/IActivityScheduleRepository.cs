@@ -10,7 +10,7 @@ namespace CommunityConnection.Infrastructure.Repository
     {
         Task<ActivitySchedule> CreateAsync(ActivitySchedule schedule);
         Task<ActivitySchedule?> GetByIdAsync(long id);
-        Task<List<ActivitySchedule>> GetByUserIdAsync(long userId); // lấy danh sách lịch trình theo userId
+        Task<List<ActivitySchedule>> GetByUserIdAsync(long userId, DateTime date); // lấy danh sách lịch trình theo userId
         Task UpdateAsync(ActivitySchedule schedule);
 
     }

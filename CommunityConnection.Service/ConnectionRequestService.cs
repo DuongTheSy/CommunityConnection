@@ -146,6 +146,10 @@ namespace CommunityConnection.Service
                 data = true
             };
         }
+        public async Task<List<ConnectionRequest>> GetReceivedRequestsAsync(long receiverUserId)
+        {
+            return await _repo.GetReceivedRequestsAsync(receiverUserId);
+        }
     }
 
 }

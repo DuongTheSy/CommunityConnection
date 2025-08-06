@@ -46,7 +46,7 @@ namespace CommunityConnection.WebApi.Controllers
             return Ok(result);
         }
         [HttpGet("get-activity-schedule")]
-        public async Task<IActionResult> GetScheduleByUserId()
+        public async Task<IActionResult> GetScheduleByUserId([FromQuery] DateTime date)
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -70,7 +70,7 @@ namespace CommunityConnection.WebApi.Controllers
             }
             long userId = long.Parse(userIdClaim.Value);
 
-            var schedules = await _service.GetByUserIdAsync(userId);
+            var schedules = await _service.GetByUserIdAsync(userId, date);
 
             return Ok(new ApiResponse<List<ActivitySchedule>>
             {

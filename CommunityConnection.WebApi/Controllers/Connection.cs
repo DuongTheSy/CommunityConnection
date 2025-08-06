@@ -56,6 +56,41 @@ namespace CommunityConnection.WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("received-list")]
+        public async Task<IActionResult> GetReceivedRequests()
+        {
+            long userId = GetUserIdFromToken();
+            if (userId == 0)
+            {
+                return Unauthorized(new ApiResponse<bool>
+                {
+                    status = false,
+                    message = "Bạn chưa đăng nhập",
+                    data = false
+                });
+            }
+
+            var result = await _service.GetReceivedRequestsAsync(userId);
+            return Ok(result);
+        }
+        //[HttpGet("sent-list")]
+        //public async Task<IActionResult> GetSentRequests()
+        //{
+        //    long userId = GetUserIdFromToken();
+        //    if (userId == 0)
+        //    {
+        //        return Unauthorized(new ApiResponse<bool>
+        //        {
+        //            status = false,
+        //            message = "Bạn chưa đăng nhập",
+        //            data = false
+        //        });
+        //    }
+
+        //    var result = await _service.GetSentRequestsAsync(userId);
+        //    return Ok(result);
+        //}
+
         private long GetUserIdFromToken()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

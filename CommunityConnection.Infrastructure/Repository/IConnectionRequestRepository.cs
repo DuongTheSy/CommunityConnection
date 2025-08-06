@@ -12,6 +12,7 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<bool> CreateConnectionRequestAsync(ConnectionRequest request);
         Task<ConnectionRequest?> GetByIdAsync(long id);
         Task<bool> UpdateConnectionRequestAsync(ConnectionRequest request);
+        Task<List<ConnectionRequest>> GetReceivedRequestsAsync(long receiverUserId);
     }
 
 }

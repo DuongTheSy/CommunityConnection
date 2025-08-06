@@ -53,9 +53,9 @@ namespace CommunityConnection.Service
                 data = await _repository.CreateAsync(schedule)
             });
         }
-        public async Task<List<ActivitySchedule>> GetByUserIdAsync(long userId)
+        public async Task<List<ActivitySchedule>> GetByUserIdAsync(long userId, DateTime date)
         {
-            return await _repository.GetByUserIdAsync(userId);
+            return await _repository.GetByUserIdAsync(userId, date);
         }
 
         public async Task<ApiResponse<ReminderNotification>> CreateRemindAsync(long userId, CreateReminderNotificationDto dto)

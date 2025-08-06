@@ -21,12 +21,10 @@ namespace CommunityConnection.Infrastructure.Repository
             await _db.SaveChangesAsync();
             return schedule;
         }
-        public async Task<List<ActivitySchedule>> GetByUserIdAsync(long userId)
+        public async Task<List<ActivitySchedule>> GetByUserIdAsync(long userId, DateTime date)
         {
-
-
             return await _db.ActivitySchedules
-                .Where(a => a.UserId == userId && a.Status != 0)
+                .Where(a => a.UserId == userId && a.Status != 0 && a.Date.HasValue && a.Date.Value.Date == date.Date)
                 .Include(s => s.ReminderNotification)
                 .OrderBy(a => a.Date).ThenBy(a => a.StartTime)
                 .ToListAsync();

@@ -39,14 +39,12 @@ namespace CommunityConnection.Infrastructure.Repository
             _db.ConnectionRequests.Update(request);
             return await _db.SaveChangesAsync() > 0;
         }
-        //public async Task<long?> GetRoomChatIdAsync(long user1Id, long user2Id)
-        //{
-        //    var result = await this.Set<PrivateRoomChat>()
-        //        .FromSqlRaw("EXEC GetRoomChatId @User1Id = {0}, @User2Id = {1}", user1Id, user2Id)
-        //        .ToListAsync();
-
-        //    return result.FirstOrDefault()?.ChannelId;
-        //}
+        public async Task<List<ConnectionRequest>> GetReceivedRequestsAsync(long receiverUserId)
+        {
+            return await _db.ConnectionRequests
+                .Where(cr => cr.ReceiverUserId == receiverUserId && cr.Status == 0)
+                .ToListAsync();
+        }
     }
 
 }

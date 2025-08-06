@@ -12,7 +12,7 @@ namespace CommunityConnection.Service
     public interface IActivityScheduleService
     {
         Task<ApiResponse<ActivitySchedule>> CreateAsync(long userId, CreateActivityScheduleDto dto);
-        Task<List<ActivitySchedule>> GetByUserIdAsync(long userId);
+        Task<List<ActivitySchedule>> GetByUserIdAsync(long userId, DateTime date);
         Task<ApiResponse<ActivitySchedule>> UpdateAsync(long userId, long id, UpdateActivityScheduleDto dto);
 
 
