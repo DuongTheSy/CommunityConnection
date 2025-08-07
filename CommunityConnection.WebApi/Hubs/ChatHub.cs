@@ -4,7 +4,7 @@ namespace CommunityConnection.WebApi.Hubs
 {
 
     public record User(int user_id, string Name, string Room);
-    public record Message(string User, string Text);
+    public record Message(int userId, string User, string Text);
 
     public class ChatHub : Hub
     {
@@ -43,8 +43,10 @@ namespace CommunityConnection.WebApi.Hubs
         public async Task SendMessageToRoom(string roomName, string content)
         {
             
-            var message = new Message(_users[Context.ConnectionId].Name, content);
+            var message = new Message(_users[Context.ConnectionId].user_id ,_users[Context.ConnectionId].Name, content);
             await Clients.Group(roomName).SendAsync("ReceiveMessage", message);
+
+            // Lưu vào csdl
             await _service.SendMessageAsync(long.Parse(roomName), _users[Context.ConnectionId].user_id, content);
         }
 

@@ -76,6 +76,9 @@ namespace CommunityConnection.Service
 
             return true;
         }
-
+        public async Task<List<GoalProgressDetailDto>> GetUserGoalProgressAsync(long userId)
+        {
+            return await _repository.GetAllGoalProgressByUserAsync(userId);
+        }
     }
 }

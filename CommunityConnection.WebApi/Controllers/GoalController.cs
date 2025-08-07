@@ -1,4 +1,5 @@
 ﻿using CommunityConnection.Common;
+using CommunityConnection.Entities.DTO;
 using CommunityConnection.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -290,6 +291,30 @@ namespace CommunityConnection.WebApi.Controllers
             {
                 status = true,
                 message = "Xoá mục tiêu thành công (đã đánh dấu Status = 0)"
+            });
+        }
+
+        [HttpGet("user-progress")]
+        public async Task<IActionResult> GetUserGoalProgress()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized(new ApiResponse<string>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
+
+            var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            var result = await _service.GetUserGoalProgressAsync(userId);
+
+            return Ok(new ApiResponse<List<GoalProgressDetailDto>>
+            {
+                status = true,
+                message = "Lấy danh sách mục tiêu (tiến độ) thành công",
+                data = result
             });
         }
 

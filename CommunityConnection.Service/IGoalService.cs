@@ -15,6 +15,6 @@ namespace CommunityConnection.Service
         Task<IEnumerable<Goal>> GetGoalsByUser(long userId);
         Task<Goal?> UpdateGoal(long userId, UpdateGoalDto dto);
         Task<bool> SoftDeleteGoal(long userId, long goalId);
-
+        Task<List<GoalProgressDetailDto>> GetUserGoalProgressAsync(long userId);
     }
 }

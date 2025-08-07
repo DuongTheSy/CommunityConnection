@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using CommunityConnection.Entities.DTO;
 
 namespace CommunityConnection.Infrastructure.Repository
 {
@@ -14,5 +15,7 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<Goal?> GetGoalById(long goalId);
         Task UpdateGoal(Goal goal); // cập nhật goal và xóa mềm
         Task<List<Goal>> GetAllGoalsAsync();
+
+        Task<List<GoalProgressDetailDto>> GetAllGoalProgressByUserAsync(long userId);
     }
 }

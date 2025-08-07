@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityConnection.Entities.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityConnection.Infrastructure.Repository
@@ -44,6 +45,27 @@ namespace CommunityConnection.Infrastructure.Repository
         public async Task<List<Goal>> GetAllGoalsAsync()
         {
             return await _context.Goals.ToListAsync();
+        }
+        public async Task<List<GoalProgressDetailDto>> GetAllGoalProgressByUserAsync(long userId)
+        {
+            var goals = await _context.Goals
+                .Where(g => g.UserId == userId && g.Status == 1)
+                .Include(g => g.SubGoals)
+                .ToListAsync();
+
+            return goals.Select(g => new GoalProgressDetailDto
+            {
+                GoalName = g.GoalName,
+                CompletionDate = g.CompletionDate,
+                Status = g.Status,
+                CompletedSubGoals = g.SubGoals.Count(sg => sg.Status == 2),
+                SubGoals = g.SubGoals.Select(sg => new SubGoalProgressDto
+                {
+                    Title = sg.Title,
+                    CompletionDate = sg.CompletionDate,
+                    Status = sg.Status
+                }).ToList()
+            }).ToList();
         }
     }
 }
