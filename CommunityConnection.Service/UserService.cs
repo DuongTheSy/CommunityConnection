@@ -42,5 +42,9 @@ namespace CommunityConnection.Service
             }
             return user;
         }
+        public async Task<List<string>> GetUserDeviceTokensAsync(long userId)
+        {
+            return await _userDeviceRepository.GetDeviceTokensByUserIdAsync(userId);
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace CommunityConnection.Infrastructure.Repository
     {
         Task<bool> IsDeviceTokenExistAsync(string deviceToken);
         Task AddDeviceTokenAsync(long userId, string deviceToken);
+        Task<List<string>> GetDeviceTokensByUserIdAsync(long userId);
 
     }
 }

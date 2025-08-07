@@ -32,7 +32,13 @@ namespace CommunityConnection.Infrastructure.Repository
             _db.UserDevices.Add(userDevice);
             await _db.SaveChangesAsync();
         }
+        public async Task<List<string>> GetDeviceTokensByUserIdAsync(long userId)
+        {
+            return await _db.UserDevices
+                .Where(d => d.UserId == userId && !string.IsNullOrEmpty(d.DeviceToken))
+                .Select(d => d.DeviceToken!)
+                .ToListAsync();
+        }
     }
-
 
 }

@@ -3,6 +3,9 @@ using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using CommunityConnection.Common;
+using CommunityConnection.Entities.DTO;
 
 namespace CommunityConnection.WebApi.Controllers
 {
@@ -10,25 +13,12 @@ namespace CommunityConnection.WebApi.Controllers
     [Route("api/[controller]")]
     public class NotificationController : ControllerBase
     {
-        private static bool _firebaseInitialized = false;
-        private static readonly object _lock = new object();
-
-        public NotificationController()
+        private readonly INotificationService _notificationService;
+        private readonly UserService _userService;
+        public NotificationController(INotificationService notificationService, UserService userService)
         {
-            if (!_firebaseInitialized)
-            {
-                lock (_lock)
-                {
-                    if (!_firebaseInitialized)
-                    {
-                        FirebaseApp.Create(new AppOptions()
-                        {
-                            Credential = GoogleCredential.FromFile("service-account-key.json")
-                        });
-                        _firebaseInitialized = true;
-                    }
-                }
-            }
+            _notificationService = notificationService;
+            _userService = userService;
         }
 
         [HttpPost("send-test")]
@@ -36,121 +26,71 @@ namespace CommunityConnection.WebApi.Controllers
         {
             try
             {
-                var message = new FirebaseAdmin.Messaging.Message()
-                {
-                    Token = "daoBIHddRESHU-T83KX9AJ:APA91bEEBTAEJSX8zIwT2vi6A9KdtDzIrWoRJOFe2xlKAxdd008v4PA2iFB2MLaqdA4iEZEGmFgBjIAEkQ_ANRld5Fo8dRyEvZkuBzW8D4sn2DO_ymSdV7c", // TODO: Replace with actual device token
-                    Notification = new Notification
-                    {
-                        Title = "Thông báo mới",
-                        Body = "Đây là nội dung thông báo test từ server."
-                    }
-                };
+                string response = await _notificationService.SendNotificationAsync(
+                    "daoBIHddRESHU-T83KX9AJ:APA91bEEBTAEJSX8zIwT2vi6A9KdtDzIrWoRJOFe2xlKAxdd008v4PA2iFB2MLaqdA4iEZEGmFgBjIAEkQ_ANRld5Fo8dRyEvZkuBzW8D4sn2DO_ymSdV7c", // demo token
+                    "Thông báo mới",
+                    "Đây là nội dung thông báo test từ server."
+                );
 
-                string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
-                return Ok(new
-                {
-                    status = 200,
-                    message = "Gửi thông báo thành công",
-                    data = new { MessageId = response }
-                });
+                return Ok(new { status = true, message = "Gửi thông báo thành công", data = new { MessageId = response } });
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = 400,
-                    message = "Gửi thông báo thất bại: " + ex.Message,
-                    data = (object?)null
-                });
+                return BadRequest(new { status = false, message = "Gửi thông báo thất bại: " + ex.Message });
             }
         }
 
         [HttpPost("schedule-notification")]
-        public IActionResult ScheduleNotification([FromBody] ScheduledNotificationData data)
+        public async Task<IActionResult> ScheduleNotification([FromBody] ScheduleNotificationRequest data)
         {
+            var userId = GetUserIdFromToken();
+            if (userId == 0)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
             try
             {
-                if (string.IsNullOrEmpty(data.DeviceToken) || string.IsNullOrEmpty(data.ScheduledTimeIsoString))
+                
+                var devicesToken = await _userService.GetUserDeviceTokensAsync(userId);
+                foreach (var token in devicesToken)
                 {
-                    return BadRequest(new
+                    var notificationData = new ScheduledNotificationData
                     {
-                        status = 400,
-                        message = "DeviceToken and ScheduledTimeIsoString cannot be empty.",
-                        data = (object?)null
-                    });
-                }
-
-                if (!DateTime.TryParse(data.ScheduledTimeIsoString, out DateTime scheduledTime))
-                {
-                    return BadRequest(new
-                    {
-                        status = 400,
-                        message = "Invalid ScheduledTimeIsoString format. Please use ISO 8601 format.",
-                        data = (object?)null
-                    });
-                }
-
-                TimeSpan delay = scheduledTime.ToUniversalTime() - DateTime.UtcNow;
-
-                if (delay.TotalMilliseconds < 0)
-                {
-                    return BadRequest(new
-                    {
-                        status = 400,
-                        message = "Scheduled time must be in the future.",
-                        data = (object?)null
-                    });
-                }
-
-// logic task lập lịch gửi 
-                _ = Task.Run(async () =>
-                {
-                    Console.WriteLine($"Notification scheduled for {scheduledTime.ToLocalTime()}. Waiting for {delay.TotalSeconds} seconds...");
-                    await Task.Delay(delay);
-                    var message = new FirebaseAdmin.Messaging.Message()
-                    {
-                        Notification = new Notification
-                        {
-                            Title = data.Title,
-                            Body = data.Body
-                        },
-                        Data = new Dictionary<string, string>()
-                        {
-                            { "source", "scheduled_task" },
-                            { "scheduled_time", data.ScheduledTimeIsoString }
-                        },
-                        Token = data.DeviceToken
+                        DeviceToken = token,
+                        Title = data.Title,
+                        Body = data.Body,
+                        ScheduledTimeIsoString = data.ScheduledTimeIsoString,
                     };
-                    // gửi thông báo
-                    string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
-                    Console.WriteLine($"Notification sent successfully! Response: {response}");
-                });
-/////
+
+                    await _notificationService.ScheduleNotificationAsync(notificationData);
+                }
+
                 return Ok(new
                 {
-                    status = 200,
-                    message = $"Notification has been scheduled to send at {scheduledTime.ToLocalTime()}.",
-                    data = (object?)null
+                    status = true,
+                    message = $"Đã lập lịch gửi thông báo vào {data.ScheduledTimeIsoString}"
                 });
+            }
+            catch (ArgumentException argEx)
+            {
+                return Ok(new { status = false, message = argEx.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    status = 500,
-                    message = $"Failed to schedule notification: {ex.Message}",
-                    data = (object?)null
-                });
+                return Ok(new { status = false, message = $"Lỗi khi lập lịch thông báo: {ex.Message}" });
             }
+        }
+        private long GetUserIdFromToken()
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return claim != null ? long.Parse(claim.Value) : 0;
         }
     }
 
-    public class ScheduledNotificationData
-    {
-        public string DeviceToken { get; set; }
-        public string Title { get; set; }
-        public string Body { get; set; }
-        public string ScheduledTimeIsoString { get; set; } // Thời gian dạng chuỗi ISO 8601
-    }
 
 }

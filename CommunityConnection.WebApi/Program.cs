@@ -74,6 +74,8 @@ namespace CommunityConnection.WebApi
             builder.Services.AddScoped<IConnectionRequestService, ConnectionRequestService>();
             builder.Services.AddScoped<IUserSuggestionService, UserSuggestionService>();
             builder.Services.AddScoped<IUserDeviceRepository, UserDeviceRepository>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+
 
             var app = builder.Build();
             app.UseDefaultFiles();
