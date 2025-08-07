@@ -12,10 +12,12 @@ namespace CommunityConnection.Service
     public class UserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserDeviceRepository _userDeviceRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserDeviceRepository userDeviceRepository)
         {
             _userRepository = userRepository;
+            _userDeviceRepository = userDeviceRepository;
         }
 
         public IEnumerable<User> GetAllUsers()
@@ -23,9 +25,22 @@ namespace CommunityConnection.Service
             return _userRepository.GetAllUsers();
         }
 
-        public User Login(LoginModel loginModel)
+        public async Task<User> LoginAsync(LoginModel loginModel)
         {
-            return _userRepository.Login(loginModel);
+            var user = _userRepository.Login(loginModel);
+            if (user == null)
+            {
+                return null;
+            }
+            if (!string.IsNullOrEmpty(loginModel.DeviceToken))
+            {
+                var exists = await _userDeviceRepository.IsDeviceTokenExistAsync(loginModel.DeviceToken);
+                if (!exists)
+                {
+                    await _userDeviceRepository.AddDeviceTokenAsync(user.Id, loginModel.DeviceToken);
+                }
+            }
+            return user;
         }
     }
 }

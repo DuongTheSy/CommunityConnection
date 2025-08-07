@@ -25,7 +25,6 @@ namespace CommunityConnection.Infrastructure.Repository
         {
             throw new NotImplementedException();
         }
-
         public User Login(LoginModel loginModel)
         {
             var user = _db.Users.FirstOrDefault(u => u.Username == loginModel.UserName && u.Password == loginModel.Password);

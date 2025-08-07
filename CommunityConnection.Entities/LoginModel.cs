@@ -15,5 +15,7 @@ namespace CommunityConnection.Entities
         [Required]
         [MaxLength(250)]
         public string Password { get; set; }
+
+        public string? DeviceToken { get; set; }
     }
 }

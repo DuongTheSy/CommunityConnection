@@ -63,6 +63,8 @@ public partial class ThesisContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserDevice> UserDevices { get; set; }
+
     public virtual DbSet<ViewUserInfo> ViewUserInfos { get; set; }
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -677,6 +679,9 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.OrderIndex)
                 .HasDefaultValue(0)
                 .HasColumnName("order_index");
+            entity.Property(e => e.Status)
+                .HasDefaultValue(0)
+                .HasColumnName("status");
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .HasColumnName("title");
@@ -747,6 +752,25 @@ public partial class ThesisContext : DbContext
                         j.IndexerProperty<long>("UserId").HasColumnName("user_id");
                         j.IndexerProperty<long>("FieldId").HasColumnName("field_id");
                     });
+        });
+
+        modelBuilder.Entity<UserDevice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__user_dev__3213E83F02E1296F");
+
+            entity.ToTable("user_device");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("create_at");
+            entity.Property(e => e.DeviceToken).HasColumnName("device_token");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserDevices)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_UserDevice_User");
         });
 
         modelBuilder.Entity<ViewUserInfo>(entity =>

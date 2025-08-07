@@ -30,18 +30,11 @@ namespace CommunityConnection.WebApi.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> LoginAsync(LoginModel model)
         {
             try
             {
-                User result = _userService.Login(model);
-                //if(jwtToken != null) {
-                //    return Ok(new ApiResponse<string>
-                //    {
-                //        status = "true",
-                //        message = "Thành công"
-                //    });
-                //}
+                var result = await _userService.LoginAsync(model);
                 if (result == null) {
                     return Ok(new ApiResponse<string>
                     {
@@ -94,6 +87,14 @@ namespace CommunityConnection.WebApi.Controllers
         {
             var currentUserId = GetUserIdFromToken(); // Hàm riêng của bạn
             var suggestions = await _userSuggestionService.GetSuggestedUsersAsync(currentUserId);
+            return Ok(suggestions);
+        }
+
+        [HttpGet("suggest-mentor")]
+        public async Task<IActionResult> SuggestMentor([FromQuery] string goal)
+        {
+            var currentUserId = GetUserIdFromToken(); // Hàm riêng của bạn
+            var suggestions = await _userSuggestionService.GetSuggestedMentorsAsync(currentUserId, goal);
             return Ok(suggestions);
         }
 

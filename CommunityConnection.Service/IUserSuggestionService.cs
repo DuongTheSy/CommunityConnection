@@ -10,5 +10,6 @@ namespace CommunityConnection.Service
     public interface IUserSuggestionService
     {
         Task<List<SuggestedUserDto>> GetSuggestedUsersAsync(long currentUserId);
+        Task<List<SuggestedUserDto>> GetSuggestedMentorsAsync(long userId, string goal);
     }
 }

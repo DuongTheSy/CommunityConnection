@@ -19,5 +19,7 @@ public partial class SubGoal
 
     public string? Activity { get; set; }
 
+    public int? Status { get; set; }
+
     public virtual Goal Goal { get; set; } = null!;
 }

@@ -67,5 +67,7 @@ public partial class User
 
     public virtual Role? Role { get; set; }
 
+    public virtual ICollection<UserDevice> UserDevices { get; set; } = new List<UserDevice>();
+
     public virtual ICollection<Field> Fields { get; set; } = new List<Field>();
 }

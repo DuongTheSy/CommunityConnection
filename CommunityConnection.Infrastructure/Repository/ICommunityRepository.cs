@@ -1,4 +1,5 @@
 ﻿using CommunityConnection.Common;
+using CommunityConnection.Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace CommunityConnection.Infrastructure.Repository
         #endregion
 
         Task DeleteAsync(Community community);
+        Task<List<SuggestMentor>> GetCommunitiesWithRole2MembersAsync();
 
     }
 

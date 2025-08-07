@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using CommunityConnection.Entities.DTO;
 
 namespace CommunityConnection.Infrastructure.Repository
 {
@@ -78,6 +79,22 @@ namespace CommunityConnection.Infrastructure.Repository
         {
             _db.Communities.Remove(community);
             await _db.SaveChangesAsync();
+        }
+        public async Task<List<SuggestMentor>> GetCommunitiesWithRole2MembersAsync()
+        {
+            var result = await _db.CommunityMembers
+                .Where(cm => cm.Role == 2) // quản trị viên
+                .Select(cm => new SuggestMentor
+                {
+                    CommunityId = cm.Community.Id,
+                    CommunityName = cm.Community.CommunityName,
+                    MemberUserId = cm.UserId,
+                    MemberRole = cm.Role ?? 0,
+                    Description = cm.Community.Description
+                })
+                .ToListAsync();
+
+            return result;
         }
     }
 }
