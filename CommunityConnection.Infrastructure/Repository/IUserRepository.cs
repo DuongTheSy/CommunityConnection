@@ -11,5 +11,7 @@ namespace CommunityConnection.Infrastructure.Repository
         IEnumerable<User> GetAllUsers();
         User? GetUserById(int id);
         public User Login(LoginModel loginModel);
+        Task<List<User>> GetUsersByIdsAsync(List<long> userIds);
+
     }
 }

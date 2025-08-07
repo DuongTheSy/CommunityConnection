@@ -150,6 +150,14 @@ namespace CommunityConnection.Service
         {
             return await _repo.GetReceivedRequestsAsync(receiverUserId);
         }
+        public async Task<List<ConnectionRequest>> GetSentRequestsAsync(long senderUserId)
+        {
+            return await _repo.GetSentRequestsAsync(senderUserId);
+        }
+        public async Task<List<ConnectionRequest>> GetFriendsList(long senderUserId)
+        {
+            return await _repo.GetFriendsList(senderUserId);
+        }
     }
 
 }

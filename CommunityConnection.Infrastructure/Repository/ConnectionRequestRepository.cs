@@ -24,6 +24,15 @@ namespace CommunityConnection.Infrastructure.Repository
                 (r.Status == null || r.Status == 0)); // Đang chờ duyệt
         }
 
+
+        //public async Task<bool> IsFriend(long senderUserId, long receiverUserId)
+        //{
+        //    return await _db.ConnectionRequests.AnyAsync(r =>
+        //        r.SenderUserId == senderUserId &&
+        //        r.ReceiverUserId == receiverUserId &&
+        //        (r.Status == null || r.Status == 0)); // Đang chờ duyệt
+        //}
+
         public async Task<bool> CreateConnectionRequestAsync(ConnectionRequest request)
         {
             _db.ConnectionRequests.Add(request);
@@ -43,6 +52,18 @@ namespace CommunityConnection.Infrastructure.Repository
         {
             return await _db.ConnectionRequests
                 .Where(cr => cr.ReceiverUserId == receiverUserId && cr.Status == 0)
+                .ToListAsync();
+        }
+        public async Task<List<ConnectionRequest>> GetSentRequestsAsync(long SenderUserId)
+        {
+            return await _db.ConnectionRequests
+                .Where(cr => cr.SenderUserId == SenderUserId && cr.Status == 0)
+                .ToListAsync();
+        }
+        public async Task<List<ConnectionRequest>> GetFriendsList(long userId)
+        {
+            return await _db.ConnectionRequests
+                .Where(cr => cr.Status == 1 && (cr.SenderUserId == userId || cr.ReceiverUserId == userId))
                 .ToListAsync();
         }
     }

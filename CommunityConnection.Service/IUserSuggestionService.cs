@@ -1,4 +1,5 @@
 ﻿using CommunityConnection.Entities.DTO;
+using CommunityConnection.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace CommunityConnection.Service
 {
     public interface IUserSuggestionService
     {
-        Task<List<SuggestedUserDto>> GetSuggestedUsersAsync(long currentUserId);
-        Task<List<SuggestedUserDto>> GetSuggestedMentorsAsync(long userId, string goal);
+        Task<List<User>> GetSuggestedUsersAsync(long currentUserId);
+        Task<List<User>> GetSuggestedMentorsAsync(long userId, string goal);
     }
 }

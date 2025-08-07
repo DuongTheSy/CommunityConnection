@@ -1,4 +1,5 @@
 ﻿using CommunityConnection.Entities.DTO;
+using CommunityConnection.Infrastructure.Data;
 using CommunityConnection.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,16 @@ namespace CommunityConnection.Service
         private readonly IGoalRepository _repository;
         private readonly HttpClient _httpClient;
         private readonly ICommunityRepository _communityRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserSuggestionService(IGoalRepository repository, HttpClient httpClient, ICommunityRepository communityRepository)
+        public UserSuggestionService(IGoalRepository repository, HttpClient httpClient, ICommunityRepository communityRepository, IUserRepository userRepository)
         {
             _repository = repository;
             _httpClient = httpClient;
             _communityRepository = communityRepository;
+            _userRepository = userRepository;
         }
-        public async Task<List<SuggestedUserDto>> GetSuggestedUsersAsync(long userId)
+        public async Task<List<User>> GetSuggestedUsersAsync(long userId)
         {
             var goals = await _repository.GetAllGoalsAsync();
 
@@ -50,10 +53,13 @@ namespace CommunityConnection.Service
             }
 
             var result = JsonSerializer.Deserialize<SuggestionResponseDto>(responseString);
-            return result?.SuggestedUsers ?? new List<SuggestedUserDto>();
+            var suggestedUsers = result?.SuggestedUsers ?? new List<SuggestedUserDto>();
+            var suggestedUserIds = suggestedUsers.Select(s => s.userId).Distinct().ToList();
+            var users = await _userRepository.GetUsersByIdsAsync(suggestedUserIds);
+            return users;
 
         }
-        public async Task<List<SuggestedUserDto>> GetSuggestedMentorsAsync(long userId, string goal)
+        public async Task<List<User>> GetSuggestedMentorsAsync(long userId, string goal)
         {
             var goals = await _repository.GetAllGoalsAsync();
 
@@ -90,7 +96,10 @@ namespace CommunityConnection.Service
             }
 
             var result = JsonSerializer.Deserialize<SuggestionResponseDto>(responseString);
-            return result?.SuggestedUsers ?? new List<SuggestedUserDto>();
+            var suggestedUsers = result?.SuggestedUsers ?? new List<SuggestedUserDto>();
+            var suggestedUserIds = suggestedUsers.Select(s => s.userId).Distinct().ToList();
+            var users = await _userRepository.GetUsersByIdsAsync(suggestedUserIds);
+            return users;
 
         }
     }

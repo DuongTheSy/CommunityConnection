@@ -1,12 +1,13 @@
 ﻿using CommunityConnection.Common.Helpers;
 using CommunityConnection.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace CommunityConnection.Infrastructure.Repository
 {
@@ -36,5 +37,12 @@ namespace CommunityConnection.Infrastructure.Repository
             user.Token = jwtHelper.GenerateToken(user.Username, user.RoleId == 8 ? "Admin" : "User", user.Id);
             return user;
         }
+        public async Task<List<User>> GetUsersByIdsAsync(List<long> userIds)
+        {
+            return await _db.Users
+                .Where(u => userIds.Contains(u.Id))
+                .ToListAsync();
+        }
+
     }
 }

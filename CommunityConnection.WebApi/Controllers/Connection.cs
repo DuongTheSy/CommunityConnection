@@ -73,23 +73,41 @@ namespace CommunityConnection.WebApi.Controllers
             var result = await _service.GetReceivedRequestsAsync(userId);
             return Ok(result);
         }
-        //[HttpGet("sent-list")]
-        //public async Task<IActionResult> GetSentRequests()
-        //{
-        //    long userId = GetUserIdFromToken();
-        //    if (userId == 0)
-        //    {
-        //        return Unauthorized(new ApiResponse<bool>
-        //        {
-        //            status = false,
-        //            message = "Bạn chưa đăng nhập",
-        //            data = false
-        //        });
-        //    }
+        [HttpGet("sent-list")]
+        public async Task<IActionResult> GetSentRequests()
+        {
+            long userId = GetUserIdFromToken();
+            if (userId == 0)
+            {
+                return Unauthorized(new ApiResponse<bool>
+                {
+                    status = false,
+                    message = "Bạn chưa đăng nhập",
+                    data = false
+                });
+            }
 
-        //    var result = await _service.GetSentRequestsAsync(userId);
-        //    return Ok(result);
-        //}
+            var result = await _service.GetSentRequestsAsync(userId);
+            return Ok(result);
+        }
+
+        [HttpGet("friends-list")]
+        public async Task<IActionResult> GetFriendsList()
+        {
+            long userId = GetUserIdFromToken();
+            if (userId == 0)
+            {
+                return Unauthorized(new ApiResponse<bool>
+                {
+                    status = false,
+                    message = "Bạn chưa đăng nhập",
+                    data = false
+                });
+            }
+
+            var result = await _service.GetFriendsList(userId);
+            return Ok(result);
+        }
 
         private long GetUserIdFromToken()
         {

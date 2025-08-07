@@ -21,6 +21,10 @@ namespace CommunityConnection.Service
         Task<ApiResponse<bool>> CreateChatRoomFromChannel(long userId1, long userId2);
         // lấy danh sách yêu cầu kết nối đã nhận
         Task<List<ConnectionRequest>> GetReceivedRequestsAsync(long receiverUserId);
+        // lấy danh sách yêu cầu kết nối đã gửi
+        Task<List<ConnectionRequest>> GetSentRequestsAsync(long SenderUserId);
+        // lấy danh sách bạn bè
+        Task<List<ConnectionRequest>> GetFriendsList(long SenderUserId);
 
     }
 }

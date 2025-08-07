@@ -102,6 +102,15 @@ namespace CommunityConnection.WebApi.Controllers
         public async Task<IActionResult> CreateChannelByOpenratorOrOwner([FromBody] ChannelCreateDto dto)
         {
             var userId = GetUserIdFromToken();
+            if (userId == 0)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
             var result = await _service.CreateChannelFromOperatorOrOwnerAsync(dto, userId);
             if (!result.status) return BadRequest(result);
             return Ok(result);

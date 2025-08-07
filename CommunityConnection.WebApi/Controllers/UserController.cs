@@ -86,6 +86,15 @@ namespace CommunityConnection.WebApi.Controllers
         public async Task<IActionResult> SuggestUsers()
         {
             var currentUserId = GetUserIdFromToken(); // Hàm riêng của bạn
+            if (currentUserId == 0)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
             var suggestions = await _userSuggestionService.GetSuggestedUsersAsync(currentUserId);
             return Ok(suggestions);
         }
@@ -93,7 +102,17 @@ namespace CommunityConnection.WebApi.Controllers
         [HttpGet("suggest-mentor")]
         public async Task<IActionResult> SuggestMentor([FromQuery] string goal)
         {
+
             var currentUserId = GetUserIdFromToken(); // Hàm riêng của bạn
+            if (currentUserId == 0)
+            {
+                return Unauthorized(new ApiResponse<StatusResponse>
+                {
+                    status = false,
+                    message = "Bạn cần đăng nhập",
+                    data = null
+                });
+            }
             var suggestions = await _userSuggestionService.GetSuggestedMentorsAsync(currentUserId, goal);
             return Ok(suggestions);
         }

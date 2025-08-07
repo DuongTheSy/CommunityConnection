@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CommunityConnection.Service
 {
@@ -23,12 +24,56 @@ namespace CommunityConnection.Service
 
         public async Task<ApiResponse<ActivitySchedule>> CreateAsync(long userId, CreateActivityScheduleDto dto)
         {
-            if(dto.Date <= DateTime.Now)
+            //if(dto.Date <= DateTime.Now)
+            //{
+            //    return (new ApiResponse<ActivitySchedule>
+            //    {
+            //        status = false,
+            //        message = "Ngày bắt đầu không hợp lệ",
+            //        data = null
+            //    });
+            //}
+
+            if (!TimeSpan.TryParse(dto.StartTime, out var startSpan))
             {
                 return (new ApiResponse<ActivitySchedule>
                 {
                     status = false,
-                    message = "Ngày bắt đầu không hợp lệ",
+                    message = "Thời gian bắt đầu không hợp lệ. Định dạng yêu cầu: hh:mm:ss",
+                    data = null
+                });
+            }
+
+            if (!TimeSpan.TryParse(dto.EndTime, out var endSpan))
+            {
+                return (new ApiResponse<ActivitySchedule>
+                {
+                    status = false,
+                    message = "Thời gian kết thúc không hợp lệ. Định dạng yêu cầu: hh:mm:ss",
+                    data = null
+                });
+            }
+            var now = DateTime.Now;
+
+            var startDateTime = dto.Date.Value.Date + startSpan;
+            var endDateTime = dto.Date.Value.Date + endSpan;
+
+            if (startDateTime <= now)
+            {
+                return (new ApiResponse<ActivitySchedule>
+                {
+                    status = false,
+                    message = "Thời gian bắt đầu phải lớn hơn thời điểm hiện tại.",
+                    data = null
+                });
+            }
+
+            if (endDateTime <= startDateTime)
+            {
+                return (new ApiResponse<ActivitySchedule>
+                {
+                    status = false,
+                    message = "Thời gian kết thúc phải sau thời gian bắt đầu.",
                     data = null
                 });
             }

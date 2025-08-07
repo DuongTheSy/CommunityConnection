@@ -13,6 +13,8 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<ConnectionRequest?> GetByIdAsync(long id);
         Task<bool> UpdateConnectionRequestAsync(ConnectionRequest request);
         Task<List<ConnectionRequest>> GetReceivedRequestsAsync(long receiverUserId);
+        Task<List<ConnectionRequest>> GetSentRequestsAsync(long senderUserId);
+        Task<List<ConnectionRequest>> GetFriendsList(long SenderUserId);
     }
 
 }
