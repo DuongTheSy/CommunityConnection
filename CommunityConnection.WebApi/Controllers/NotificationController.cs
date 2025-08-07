@@ -102,6 +102,7 @@ namespace CommunityConnection.WebApi.Controllers
                     });
                 }
 
+// logic task lập lịch gửi 
                 _ = Task.Run(async () =>
                 {
                     Console.WriteLine($"Notification scheduled for {scheduledTime.ToLocalTime()}. Waiting for {delay.TotalSeconds} seconds...");
@@ -120,10 +121,11 @@ namespace CommunityConnection.WebApi.Controllers
                         },
                         Token = data.DeviceToken
                     };
+                    // gửi thông báo
                     string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
                     Console.WriteLine($"Notification sent successfully! Response: {response}");
                 });
-
+/////
                 return Ok(new
                 {
                     status = 200,
