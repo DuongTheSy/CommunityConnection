@@ -50,7 +50,7 @@ namespace CommunityConnection.WebApi
                           .SetIsOriginAllowed(_ => true)
                           .AllowCredentials());
             });
-
+            builder.Services.AddHttpClient();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserService>();
@@ -72,6 +72,7 @@ namespace CommunityConnection.WebApi
             builder.Services.AddScoped<IJoinRequestRepository, JoinRequestRepository>();
             builder.Services.AddScoped<IConnectionRequestRepository, ConnectionRequestRepository>();
             builder.Services.AddScoped<IConnectionRequestService, ConnectionRequestService>();
+            builder.Services.AddScoped<IUserSuggestionService, UserSuggestionService>();
             var app = builder.Build();
             app.UseDefaultFiles();
             app.UseStaticFiles();

@@ -59,3 +59,22 @@ project.fragment.lock.json
 *.bak
 *.old
 *.cache
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.egg-info/
+.env/
+venv/
+.venv/
+pip-log.txt
+.pytest_cache/
+
+# # If using Jupyter
+# *.ipynb_checkpoints
+
+# # Mac & Linux
+# *.DS_Store
+# .cache/

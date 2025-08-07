@@ -41,6 +41,9 @@ namespace CommunityConnection.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
-
+        public async Task<List<Goal>> GetAllGoalsAsync()
+        {
+            return await _context.Goals.ToListAsync();
+        }
     }
 }

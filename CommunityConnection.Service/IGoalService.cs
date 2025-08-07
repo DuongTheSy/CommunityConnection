@@ -1,4 +1,5 @@
 ﻿using CommunityConnection.Entities;
+using CommunityConnection.Entities.DTO;
 using CommunityConnection.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,6 @@ namespace CommunityConnection.Service
         Task<IEnumerable<Goal>> GetGoalsByUser(long userId);
         Task<Goal?> UpdateGoal(long userId, UpdateGoalDto dto);
         Task<bool> SoftDeleteGoal(long userId, long goalId);
-
 
     }
 }

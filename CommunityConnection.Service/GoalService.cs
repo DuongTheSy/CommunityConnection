@@ -1,10 +1,13 @@
 ﻿using CommunityConnection.Entities;
+using CommunityConnection.Entities.DTO;
 using CommunityConnection.Infrastructure.Data;
 using CommunityConnection.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CommunityConnection.Service
@@ -12,10 +15,12 @@ namespace CommunityConnection.Service
     public class GoalService : IGoalService
     {
         private readonly IGoalRepository _repository;
+        private readonly HttpClient _httpClient;
 
-        public GoalService(IGoalRepository repository)
+        public GoalService(IGoalRepository repository, HttpClient httpClient)
         {
             _repository = repository;
+            _httpClient = httpClient;
         }
 
         public async Task<Goal> CreateGoalAsync(GoalViewModel dto)
@@ -71,7 +76,6 @@ namespace CommunityConnection.Service
 
             return true;
         }
-
 
     }
 }

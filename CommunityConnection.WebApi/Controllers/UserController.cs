@@ -1,9 +1,13 @@
 ﻿using CommunityConnection.Common;
 using CommunityConnection.Common.Helpers;
+using CommunityConnection.Entities.DTO;
 using CommunityConnection.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text;
 
 namespace CommunityConnection.WebApi.Controllers
 {
@@ -14,13 +18,15 @@ namespace CommunityConnection.WebApi.Controllers
         private readonly JwtHelper _jwtHelper;
         private readonly UserService _userService;
         private readonly ICommunityService _communityService;
+        private readonly IUserSuggestionService _userSuggestionService;
 
 
-        public UserController(UserService userService, JwtHelper jwtHelper, ICommunityService communityService)
+        public UserController(UserService userService, JwtHelper jwtHelper, ICommunityService communityService, IUserSuggestionService userSuggestionService)
         {
             _userService = userService;
             _jwtHelper = jwtHelper;
             _communityService = communityService;
+            _userSuggestionService = userSuggestionService;
         }
 
         [HttpPost("Login")]
@@ -83,5 +89,18 @@ namespace CommunityConnection.WebApi.Controllers
             return Ok(users);
         }
 
+        [HttpGet("suggest-users")]
+        public async Task<IActionResult> SuggestUsers()
+        {
+            var currentUserId = GetUserIdFromToken(); // Hàm riêng của bạn
+            var suggestions = await _userSuggestionService.GetSuggestedUsersAsync(currentUserId);
+            return Ok(suggestions);
+        }
+
+        private long GetUserIdFromToken()
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return claim != null ? long.Parse(claim.Value) : 0;
+        }
     }
 }

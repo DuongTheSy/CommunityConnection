@@ -13,6 +13,6 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<IEnumerable<Goal>> GetGoalsByUserId(long userId);
         Task<Goal?> GetGoalById(long goalId);
         Task UpdateGoal(Goal goal); // cập nhật goal và xóa mềm
-
+        Task<List<Goal>> GetAllGoalsAsync();
     }
 }
