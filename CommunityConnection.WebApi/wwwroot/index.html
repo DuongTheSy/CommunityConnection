@@ -1,55 +1,309 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>SignalR Chat</title>
-    <meta charset="UTF-8">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GConnect - Quản lý người dùng</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      background-color: #f5f6fa;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      border-right: 1px solid #0070D9;
+    }
+
+    .logo {
+      margin-bottom: 30px;
+    }
+
+    .logo img {
+      height: 150px;
+      width: auto;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px 10px;
+      margin: 10px;
+      background-color: #fff;
+      color: #0070D9;
+      text-decoration: none;
+      width: 80%;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+
+    .main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: #0070D9;
+      color: white;
+      padding: 30px 50px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .search-filter {
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-wrapper {
+      width: 60%;
+      position: relative;
+      flex-grow: 1;
+      min-width: 250px;
+      margin-left: 20px;
+    }
+
+    .search-wrapper input {
+      width: 80%;
+      height: 45px;
+      padding: 8px 10px 8px 45px;
+      border: 1px solid #0070D9;
+      border-radius: 50px;
+      font-size: 16px;
+    }
+
+    .search-wrapper input:focus {
+      outline: none;
+      border-color: #0070D9;
+    }
+
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .filter-button {
+      padding: 15px 25px;
+      background-color: #0070D9;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    table {
+      width: 95%;
+      margin: 20px auto;
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #0070D9;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .status-active {
+      color: green;
+    }
+
+    .status-locked {
+      color: red;
+    }
+
+    .action-btn {
+      cursor: pointer;
+      color: #0070D9;
+    }
+
+    .action-btn.unlock {
+      color: #ff3b3b;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .pagination-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .page-arrow, .page-number {
+      border: none;
+      background-color: #fff;
+      border-radius: 30%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #0070D9;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-number.active {
+      background-color: #0070D9;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        width: 100%;
+      }
+
+      .search-filter {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      table, th, td {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h2>Phòng Chat</h2>
-    <input id="userName" placeholder="Tên bạn" />
-    <input id="roomName" placeholder="Tên phòng" />
-    <button id="joinRoom">Vào phòng</button>
-    <hr />
-    <div id="messages" style="border:1px solid #ccc; padding:10px; height:300px; overflow:auto;"></div>
-    <input id="messageInput" placeholder="Tin nhắn..." style="width: 100%;" />
+  <div class="sidebar">
+    <div class="logo">
+      <img src="logo.jpg" alt="GConnect Logo">
+    </div>
+    <a href="#" style="color: #ffffff; background-color: #1976D2;">NGƯỞI DÙNG</a>
+    <a href="#">CỘNG ĐỒNG</a>
+  </div>
 
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatHub")
-            .withAutomaticReconnect()
-            .build();
+  <div class="main">
+    <div class="header">QUẢN LÝ NGƯỞI DÙNG</div>
 
-        connection.start().catch(console.error);
+    <div class="search-filter">
+      <div class="search-wrapper">
+        <img src="search-icon.png" class="search-icon" alt="search">
+        <input type="text" placeholder="Tên đăng nhập, người dùng...">
+      </div>
+      <button class="filter-button">Trạng thái ▼</button>
+    </div>
 
-        document.getElementById("joinRoom").addEventListener("click", function () {
-            const user = document.getElementById("userName").value;
-            const room = document.getElementById("roomName").value;
-            connection.invoke("JoinRoom", user, room);
-        });
+    <table>
+      <thead>
+        <tr>
+          <th>Họ và tên</th>
+          <th>Email</th>
+          <th>Ngày tạo tài khoản</th>
+          <th>Trạng thái tài khoản</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="user-table-body"></tbody>
+    </table>
 
-        document.getElementById("messageInput").addEventListener("keyup", function (e) {
-            if (e.key === "Enter") {
-                const msg = e.target.value;
-                const room = document.getElementById("roomName").value;
-                connection.invoke("SendMessageToRoom", room, msg);
-                e.target.value = "";
-            }
-        });
+    <div class="pagination-container">
+      <div class="pagination-controls">
+        <button class="page-arrow" onclick="prevPage()">&#8249;</button>
+        <button class="page-number active">1</button>
+        <button class="page-arrow" onclick="nextPage()">&#8250;</button>
+      </div>
+      <div class="pagination-info">Hiển thị kết quả 1/4</div>
+    </div>
+  </div>
+  <script>
+    const users = [
+      { name: "Nguyễn Minh Anh", email: "minhanh123@gmail.com", date: "01/08/2025", status: "active" },
+      { name: "Nguyễn Văn Tuấn", email: "tuannguyen098@gmail.com", date: "29/07/2025", status: "active" },
+      { name: "Trần Thanh Tâm", email: "thanhtam109@gmail.com", date: "28/07/2025", status: "active" },
+      { name: "Ngô Minh Hiếu", email: "ngominhhieu2312@gmail.com", date: "27/07/2025", status: "locked" },
+      { name: "Lương Đức Thành", email: "thanhduc107@gmail.com", date: "27/07/2025", status: "active" },
+      { name: "Lương Ngọc Hoa", email: "ngchoa547@gmail.com", date: "26/07/2025", status: "locked" },
+      { name: "Lê Anh Đức", email: "anhducle128@gmail.com", date: "25/07/2025", status: "locked" },
+      { name: "Nguyễn Xuân Trang", email: "trangnguyen123@gmail.com", date: "25/07/2025", status: "active" },
+      { name: "Nguyễn Anh Thơ", email: "anhthonguyen43@gmail.com", date: "24/07/2025", status: "active" }
+    ];
 
-        connection.on("ReceiveMessage", function (msg) {
-            const messages = document.getElementById("messages");
-            messages.innerHTML += `<p><b>${msg.user}</b>: ${msg.text}</p>`;
-            messages.scrollTop = messages.scrollHeight;
-        });
+    const tableBody = document.getElementById("user-table-body");
 
-        connection.on("UserJoined", function (user) {
-            document.getElementById("messages").innerHTML += `<p><i>${user} đã tham gia phòng.</i></p>`;
-        });
+    function renderUsers() {
+      tableBody.innerHTML = "";
+      users.forEach((user, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><img src="https://i.pravatar.cc/30?u=${index}" class="avatar">${user.name}</td>
+          <td>${user.email}</td>
+          <td>${user.date}</td>
+          <td class="${user.status === 'active' ? 'status-active' : 'status-locked'}">
+            ${user.status === 'active' ? '● Đang hoạt động' : '● Đã bị khoá'}
+          </td>
+          <td>
+            <span class="action-btn ${user.status === 'active' ? 'unlock' : 'lock'}" onclick="toggleStatus(${index})">
+              ${user.status === 'active' ? '🔒 Vô hiệu hoá' : '🔓 Mở khoá '}
+            </span>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
 
-        connection.on("UserLeft", function (user) {
-            document.getElementById("messages").innerHTML += `<p><i>${user} đã rời phòng.</i></p>`;
-        });
-    </script>
+    function toggleStatus(index) {
+      users[index].status = users[index].status === 'active' ? 'locked' : 'active';
+      renderUsers();
+    }
+
+    function prevPage() {
+      // Placeholder for pagination
+      alert('Trang trước');
+    }
+
+    function nextPage() {
+      // Placeholder for pagination
+      alert('Trang sau');
+    }
+
+    renderUsers();
+  </script>
 </body>
 </html>

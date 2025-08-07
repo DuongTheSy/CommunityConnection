@@ -71,10 +71,3 @@ venv/
 .venv/
 pip-log.txt
 .pytest_cache/
-
-# # If using Jupyter
-# *.ipynb_checkpoints
-
-# # Mac & Linux
-# *.DS_Store
-# .cache/
