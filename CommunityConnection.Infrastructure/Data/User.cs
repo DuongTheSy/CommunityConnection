@@ -35,11 +35,13 @@ public partial class User
 
     public string? Token { get; set; }
 
+    public string? Gender { get; set; }
+
+    public DateOnly? Birthdate { get; set; }
+
     public virtual ICollection<Achievement> Achievements { get; set; } = new List<Achievement>();
 
     public virtual ICollection<ActivitySchedule> ActivitySchedules { get; set; } = new List<ActivitySchedule>();
-
-    public virtual ICollection<ActivitySession> ActivitySessions { get; set; } = new List<ActivitySession>();
 
     public virtual ICollection<ChannelMember> ChannelMembers { get; set; } = new List<ChannelMember>();
 
@@ -60,8 +62,6 @@ public partial class User
     public virtual ICollection<JoinRequest> JoinRequestSenderUsers { get; set; } = new List<JoinRequest>();
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
-
-    public virtual ICollection<QuizAttempt> QuizAttempts { get; set; } = new List<QuizAttempt>();
 
     public virtual ICollection<ReminderNotification> ReminderNotifications { get; set; } = new List<ReminderNotification>();
 

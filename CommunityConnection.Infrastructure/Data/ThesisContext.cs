@@ -19,8 +19,6 @@ public partial class ThesisContext : DbContext
 
     public virtual DbSet<ActivitySchedule> ActivitySchedules { get; set; }
 
-    public virtual DbSet<ActivitySession> ActivitySessions { get; set; }
-
     public virtual DbSet<Channel> Channels { get; set; }
 
     public virtual DbSet<ChannelMember> ChannelMembers { get; set; }
@@ -39,21 +37,9 @@ public partial class ThesisContext : DbContext
 
     public virtual DbSet<Goal> Goals { get; set; }
 
-    public virtual DbSet<GoalNote> GoalNotes { get; set; }
-
     public virtual DbSet<JoinRequest> JoinRequests { get; set; }
 
     public virtual DbSet<Message> Messages { get; set; }
-
-    public virtual DbSet<Question> Questions { get; set; }
-
-    public virtual DbSet<QuestionOption> QuestionOptions { get; set; }
-
-    public virtual DbSet<Quiz> Quizzes { get; set; }
-
-    public virtual DbSet<QuizAttempt> QuizAttempts { get; set; }
-
-    public virtual DbSet<QuizAttemptDetail> QuizAttemptDetails { get; set; }
 
     public virtual DbSet<ReminderNotification> ReminderNotifications { get; set; }
 
@@ -139,34 +125,6 @@ public partial class ThesisContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.ActivitySchedules)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("fk_activity_schedule_user");
-        });
-
-        modelBuilder.Entity<ActivitySession>(entity =>
-        {
-            entity.HasKey(e => e.SessionId).HasName("PK__activity__69B13FDC406BF182");
-
-            entity.ToTable("activity_session");
-
-            entity.Property(e => e.SessionId).HasColumnName("session_id");
-            entity.Property(e => e.ActivityId).HasColumnName("activity_id");
-            entity.Property(e => e.EndTime)
-                .HasColumnType("datetime")
-                .HasColumnName("end_time");
-            entity.Property(e => e.Notes).HasColumnName("notes");
-            entity.Property(e => e.StartTime)
-                .HasColumnType("datetime")
-                .HasColumnName("start_time");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-
-            entity.HasOne(d => d.Activity).WithMany(p => p.ActivitySessions)
-                .HasForeignKey(d => d.ActivityId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_activity_session_activity");
-
-            entity.HasOne(d => d.User).WithMany(p => p.ActivitySessions)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_activity_session_user");
         });
 
         modelBuilder.Entity<Channel>(entity =>
@@ -397,24 +355,6 @@ public partial class ThesisContext : DbContext
                 .HasConstraintName("fk_goal_user");
         });
 
-        modelBuilder.Entity<GoalNote>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__goal_not__3213E83F6C257FDE");
-
-            entity.ToTable("goal_note");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.GoalId).HasColumnName("goal_id");
-            entity.Property(e => e.NoteText).HasColumnName("note_text");
-            entity.Property(e => e.OrderIndex)
-                .HasDefaultValue(0)
-                .HasColumnName("order_index");
-
-            entity.HasOne(d => d.Goal).WithMany(p => p.GoalNotes)
-                .HasForeignKey(d => d.GoalId)
-                .HasConstraintName("fk_goal_note");
-        });
-
         modelBuilder.Entity<JoinRequest>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__join_req__3213E83FDBD64109");
@@ -476,147 +416,6 @@ public partial class ThesisContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Messages)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("fk_message_user");
-        });
-
-        modelBuilder.Entity<Question>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__question__3213E83FD0D871BF");
-
-            entity.ToTable("question");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Content).HasColumnName("content");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.DifficultyLevel)
-                .HasMaxLength(50)
-                .HasColumnName("difficulty_level");
-            entity.Property(e => e.QuizId).HasColumnName("quiz_id");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-
-            entity.HasOne(d => d.Quiz).WithMany(p => p.Questions)
-                .HasForeignKey(d => d.QuizId)
-                .HasConstraintName("fk_question_quiz");
-        });
-
-        modelBuilder.Entity<QuestionOption>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__question__3213E83F8D04A1EF");
-
-            entity.ToTable("question_option");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Content).HasColumnName("content");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.IsCorrect)
-                .HasDefaultValue(false)
-                .HasColumnName("is_correct");
-            entity.Property(e => e.QuestionId).HasColumnName("question_id");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-
-            entity.HasOne(d => d.Question).WithMany(p => p.QuestionOptions)
-                .HasForeignKey(d => d.QuestionId)
-                .HasConstraintName("fk_question_option_question");
-        });
-
-        modelBuilder.Entity<Quiz>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__quiz__3213E83FED551EFF");
-
-            entity.ToTable("quiz");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ChannelId).HasColumnName("channel_id");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.DurationMinutes).HasColumnName("duration_minutes");
-            entity.Property(e => e.EndTime)
-                .HasColumnType("datetime")
-                .HasColumnName("end_time");
-            entity.Property(e => e.QuizType)
-                .HasMaxLength(50)
-                .HasColumnName("quiz_type");
-            entity.Property(e => e.StartTime)
-                .HasColumnType("datetime")
-                .HasColumnName("start_time");
-            entity.Property(e => e.Status)
-                .HasDefaultValue(false)
-                .HasColumnName("status");
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .HasColumnName("title");
-
-            entity.HasOne(d => d.Channel).WithMany(p => p.Quizzes)
-                .HasForeignKey(d => d.ChannelId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_quiz_channel");
-        });
-
-        modelBuilder.Entity<QuizAttempt>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__quiz_att__3213E83FB4107411");
-
-            entity.ToTable("quiz_attempt");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.DurationMinutes).HasColumnName("duration_minutes");
-            entity.Property(e => e.EndTime)
-                .HasColumnType("datetime")
-                .HasColumnName("end_time");
-            entity.Property(e => e.QuizId).HasColumnName("quiz_id");
-            entity.Property(e => e.Score)
-                .HasColumnType("decimal(5, 2)")
-                .HasColumnName("score");
-            entity.Property(e => e.StartTime)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("start_time");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-
-            entity.HasOne(d => d.Quiz).WithMany(p => p.QuizAttempts)
-                .HasForeignKey(d => d.QuizId)
-                .HasConstraintName("fk_quiz_attempt_quiz");
-
-            entity.HasOne(d => d.User).WithMany(p => p.QuizAttempts)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("fk_quiz_attempt_user");
-        });
-
-        modelBuilder.Entity<QuizAttemptDetail>(entity =>
-        {
-            entity.HasKey(e => new { e.ResultId, e.OptionId }).HasName("PK__quiz_att__00FD6FF7DB0CBF60");
-
-            entity.ToTable("quiz_attempt_detail");
-
-            entity.Property(e => e.ResultId).HasColumnName("result_id");
-            entity.Property(e => e.OptionId).HasColumnName("option_id");
-            entity.Property(e => e.Status)
-                .HasDefaultValue(false)
-                .HasColumnName("status");
-
-            entity.HasOne(d => d.Option).WithMany(p => p.QuizAttemptDetails)
-                .HasForeignKey(d => d.OptionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_quiz_attempt_detail_option");
-
-            entity.HasOne(d => d.Result).WithMany(p => p.QuizAttemptDetails)
-                .HasForeignKey(d => d.ResultId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_quiz_attempt_detail_result");
         });
 
         modelBuilder.Entity<ReminderNotification>(entity =>
@@ -708,6 +507,7 @@ public partial class ThesisContext : DbContext
             entity.Property(e => e.AvatarUrl)
                 .HasMaxLength(255)
                 .HasColumnName("avatar_url");
+            entity.Property(e => e.Birthdate).HasColumnName("birthdate");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -718,6 +518,9 @@ public partial class ThesisContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("email");
             entity.Property(e => e.FullName).HasMaxLength(255);
+            entity.Property(e => e.Gender)
+                .HasMaxLength(10)
+                .HasColumnName("gender");
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .HasColumnName("password");

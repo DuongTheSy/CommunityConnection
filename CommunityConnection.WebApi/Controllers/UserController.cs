@@ -51,7 +51,7 @@ namespace CommunityConnection.WebApi.Controllers
                     data = result
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new ApiResponse<string>
                 {
@@ -62,23 +62,23 @@ namespace CommunityConnection.WebApi.Controllers
         }
 
         [HttpGet("GetAll")]
-        public ActionResult GetAll()
+        public ActionResult GetAll([FromQuery] int page, [FromQuery] int pagesize)
         {
-            if (!User.Identity.IsAuthenticated || !User.IsInRole("Admin"))
-            {
-                return Unauthorized(new ApiResponse<StatusResponse>
-                {
-                    status = true,
-                    message = "Thành công",
-                    data = new StatusResponse
-                    {
-                        status = false,
-                        message = "Chỉ admin mới có quyền xem"
+            //if (!User.Identity.IsAuthenticated || !User.IsInRole("Admin"))
+            //{
+            //    return Unauthorized(new ApiResponse<StatusResponse>
+            //    {
+            //        status = true,
+            //        message = "Thành công",
+            //        data = new StatusResponse
+            //        {
+            //            status = false,
+            //            message = "Chỉ admin mới có quyền xem"
 
-                    }
-                });
-            }
-            var users = _userService.GetAllUsers();
+            //        }
+            //    });
+            //}
+            var users = _userService.GetAllUsers(page, pagesize);
             return Ok(users);
         }
 

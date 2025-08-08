@@ -3,6 +3,7 @@ using CommunityConnection.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -17,9 +18,16 @@ namespace CommunityConnection.Infrastructure.Repository
         public UserRepository(ThesisContext _context) {
             _db = _context;
         }
-        public IEnumerable<User> GetAllUsers()
+        public IEnumerable<User> GetAllUsers(int page, int pagesize)
         {
-            return _db.Users.ToList();
+            if (page <= 0) page = 1;
+            if (pagesize <= 0) pagesize = 5;
+
+            return _db.Users
+                      .OrderBy(u => u.Id) // Sắp xếp để phân trang ổn định
+            .Skip((page - 1) * pagesize)
+                      .Take(pagesize)
+                      .ToList();
         }
 
         public User? GetUserById(int id)
@@ -41,8 +49,19 @@ namespace CommunityConnection.Infrastructure.Repository
         {
             return await _db.Users
                 .Where(u => userIds.Contains(u.Id))
+                .Include(u => u.Fields)
                 .ToListAsync();
+
+        }
+        public async Task<User?> GetByIdAsync(long userId)
+        {
+            return await _db.Users.FindAsync(userId);
         }
 
+        public async Task UpdateAsync(User user)
+        {
+            _db.Users.Update(user);
+            await _db.SaveChangesAsync();
+        }
     }
 }

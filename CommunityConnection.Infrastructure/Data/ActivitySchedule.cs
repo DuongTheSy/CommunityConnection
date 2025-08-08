@@ -27,8 +27,6 @@ public partial class ActivitySchedule
 
     public string? Notes { get; set; }
 
-    public virtual ICollection<ActivitySession> ActivitySessions { get; set; } = new List<ActivitySession>();
-
     public virtual ReminderNotification? ReminderNotification { get; set; }
 
     public virtual User User { get; set; } = null!;

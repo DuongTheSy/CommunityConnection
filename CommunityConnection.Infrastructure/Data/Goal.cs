@@ -21,8 +21,6 @@ public partial class Goal
 
     public string? PriorityLevel { get; set; }
 
-    public virtual ICollection<GoalNote> GoalNotes { get; set; } = new List<GoalNote>();
-
     public virtual ICollection<SubGoal> SubGoals { get; set; } = new List<SubGoal>();
 
     public virtual User User { get; set; } = null!;

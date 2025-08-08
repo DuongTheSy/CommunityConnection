@@ -37,7 +37,7 @@ namespace CommunityConnection.Infrastructure.Repository
                 {
                     messageId = m.Id,
                     userId = m.UserId,
-                    senderName = m.User.Username,
+                    senderName = m.User.FullName,
                     message = new MessageDetail
                     {
                         content = m.Content,

@@ -236,6 +236,7 @@ namespace CommunityConnection.Service
                 {
                     SenderUserId = userId,
                     CommunityId = communityId,
+                    Message = "Xin hãy thu nhận em ạ =)))",
                     Status = 0, // hoặc 0
                     CreatedAt = DateTime.UtcNow
                 });

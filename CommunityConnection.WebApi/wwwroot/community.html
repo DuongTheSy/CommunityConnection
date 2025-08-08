@@ -208,7 +208,6 @@
         font-size: 14px;
       }
     }
-    
   </style>
 </head>
 <body>
@@ -226,9 +225,9 @@
     <div class="search-filter">
       <div class="search-wrapper">
         <img src="search-icon.png" class="search-icon" alt="search">
-        <input type="text" id="search-input" placeholder="Tên đăng nhập, người dùng...">
+        <input type="text" placeholder="Tên đăng nhập, người dùng...">
       </div>
-<button class="filter-button" id="filter-button" data-status="all">Trạng thái ▼</button>
+      <button class="filter-button">Trạng thái ▼</button>
     </div>
 
     <table>
@@ -247,7 +246,7 @@
     <div class="pagination-container">
       <div class="pagination-controls">
         <button class="page-arrow" onclick="prevPage()">&#8249;</button>
-        <button id="current-page-button" class="page-number active">1</button>
+        <button class="page-number active">1</button>
         <button class="page-arrow" onclick="nextPage()">&#8250;</button>
       </div>
       <div class="pagination-info">Hiển thị kết quả 1/4</div>
@@ -259,9 +258,9 @@
   <div style="display: flex; align-items: center; gap: 10px;">
     <img id="detail-avatar" src="" style="width: 60px; height: 60px; border-radius: 50%;">
     <div>
-      <h3 id="detail-name" style="margin: 5px;"></h3>
-      <p id="detail-email" style="margin: 5px"></p>
-      <p id="detail-status" style="margin: 5px; font-weight: bold;"></p>
+      <h3 id="detail-name" style="margin: 0;"></h3>
+      <p id="detail-email" style="margin: 0;"></p>
+      <p id="detail-status" style="margin: 0; font-weight: bold;"></p>
     </div>
   </div>
 
@@ -272,11 +271,11 @@
 
   <div id="tab-content-info">
     <p><strong>Họ và tên:</strong> <span id="info-name"></span></p>
-    <p><strong>Mô tả cá nhân:</strong><br><span id="info-bio" style="display: flex; padding-top:10px"></span></p>
+    <p><strong>Mô tả cá nhân:</strong><br><span id="info-bio"></span></p>
     <p><strong>Giới tính:</strong> <span id="info-gender"></span></p>
     <p><strong>Ngày sinh:</strong> <span id="info-dob"></span></p>
     <p><strong>Vị trí:</strong> <span id="info-location"></span></p>
-    <p><strong>Lĩnh vực quan tâm:</strong><br><span id="info-interests" style="display: flex; padding-top:10px"></span></p>
+    <p><strong>Lĩnh vực quan tâm:</strong><br><span id="info-interests"></span></p>
   </div>
 
 <div id="tab-content-reports" style="display: none;"></div>
@@ -284,63 +283,49 @@
 </div>
 
 
-<script>
-let users = [];
-let currentPage = 1;
-const pageSize = 3;
-async function fetchUsersFromApi(page) {
-  try {
-    const response = await fetch(`http://localhost:5097/api/User/GetAll?page=${page}&pagesize=${pageSize}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+  <script>
 
-    if (!response.ok) {
-      throw new Error('Lỗi khi gọi API: ' + response.status);
-    }
-    const data = await response.json();
 
-     if (!Array.isArray(data) || data.length === 0) {
-      console.warn("Không có người dùng nào được trả về.");
-      return null;
-    }
-    users = data.map(user => ({
-      id: user.id,
-      name: user.fullName || user.username,
-      email: user.email,
-      date: new Date(user.createdAt).toLocaleDateString('vi-VN'),
-      status: user.status === true ? 'active' : 'locked',
-      gender: user.gender || '',  // nếu có
-      dob: new Date(user.birthdate).toLocaleDateString('vi-VN') || '',        // nếu có
-      location: user.address || '',
-      bio: user.description || '',
-      interests: user.descriptionSkill ? user.descriptionSkill.split(',') : [],
-      reports: [] // Bạn có thể cập nhật nếu có dữ liệu báo cáo riêng
-    }));
-    renderUsers();
-    // Tìm kiếm người dùng theo tên hoặc username
-document.getElementById("search-input").addEventListener("input", function () {
-  const keyword = this.value.trim().toLowerCase();
+const users = [
+  {
+    name: "Ngô Minh Hiếu",
+    email: "ngominhhieu2312@gmail.com",
+    date: "27/07/2025",
+    status: "locked",
+    gender: "Nam",
+    dob: "10/09/2003",
+    location: "Đống Đa, Hà Nội, Việt Nam",
+    bio: "Tôi yêu thích các ngôn ngữ giao tiếp và mong muốn phát triển bản thân.",
+    interests: ["Ngôn ngữ", "Âm nhạc"],
+    reports: [
+      // {
+      //   date: "05/08/2025",
+      //   reason: "Spam trong cộng đồng",
+      //   reporter: "Nguyễn Thị Linh",
+      //   status: "Đã khoá tài khoản"
+      // },
+      // {
+      //   date: "01/08/2025",
+      //   reason: "Spam tin nhắn trong cộng đồng",
+      //   reporter: "Nguyễn Minh Anh",
+      //   status: "Đã cảnh báo"
+      // },
+      // {
+      //   date: "29/07/2025",
+      //   reason: "Nội dung tin nhắn phản cảm",
+      //   reporter: "Nguyễn Văn Tuấn",
+      //   status: "Đã cảnh báo"
+      // }
+    ]
+  },
+  // ...các user khác
+];
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(keyword)
-  );
+    const tableBody = document.getElementById("user-table-body");
 
-  renderUsers(filteredUsers);
-});
-
-  } catch (error) {
-    console.error('Lỗi khi lấy dữ liệu người dùng:', error);
-  }
-}
-
-const tableBody = document.getElementById("user-table-body");
-
-function renderUsers(filtered = users) {
+function renderUsers() {
   tableBody.innerHTML = "";
-  filtered.forEach((user, index) => {
+  users.forEach((user, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><img src="https://i.pravatar.cc/30?u=${index}" class="avatar">${user.name}</td>
@@ -349,21 +334,21 @@ function renderUsers(filtered = users) {
       <td class="${user.status === 'active' ? 'status-active' : 'status-locked'}">
         ${user.status === 'active' ? '● Đang hoạt động' : '● Đã bị khoá'}
       </td>
-      <td onclick="toggleUserStatus(${index}, ${user.id}, ${user.status === 'active'}); event.stopPropagation();" 
-          class="action-btn ${user.status === 'active' ? 'unlock' : 'lock'}">
-         ${user.status === 'active' ? '🔒 Vô hiệu hoá' : '🔓 Mở khoá'}
+      <td>
+        <span class="action-btn ${user.status === 'active' ? 'unlock' : 'lock'}" onclick="toggleStatus(${index}); event.stopPropagation();">
+          ${user.status === 'active' ? '🔒 Vô hiệu hoá' : '🔓 Mở khoá '}
+        </span>
       </td>
     `;
 
+    // Sự kiện click vào dòng để hiện chi tiết
     tr.addEventListener("click", () => {
-      showUserDetails(user, index);
+      showUserDetails(user);
     });
 
     tableBody.appendChild(tr);
   });
 }
-
-
 
 function switchTab(tab) {
   const infoTab = document.getElementById("tab-content-info");
@@ -389,111 +374,44 @@ function switchTab(tab) {
   }
 }
 
-async function toggleUserStatus(index, userId, currentStatus) {
-    const actionText = currentStatus ? 'vô hiệu hóa' : 'mở khóa';
-    const confirmed = confirm(`Bạn có chắc chắn muốn ${actionText} tài khoản này?`);
 
-    if (!confirmed) return;
-
-    const url = 'http://localhost:5097/api/Admin/update-status';
-
-    const requestData = {
-        userId: userId,
-        status: !currentStatus // Đảo trạng thái
-    };
-
-    try {
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
-        });
-
-        if (!response.ok) {
-            throw new Error(`Lỗi: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Cập nhật thành công:', data.message);
-
-        // Cập nhật lại trạng thái trong danh sách users (kiểu boolean)
+    function toggleStatus(index) {
       users[index].status = users[index].status === 'active' ? 'locked' : 'active';
       renderUsers();
-
-    } catch (error) {
-        console.error('Lỗi khi cập nhật trạng thái người dùng:', userId);
-        console.error(error);
     }
-}
-
-document.getElementById("filter-button").addEventListener("click", function () {
-  const button = this;
-  const currentStatus = button.getAttribute("data-status");
-
-  let nextStatus;
-  let filteredUsers;
-
-  if (currentStatus === "all") {
-    nextStatus = "active";
-    filteredUsers = users.filter(user => user.status === "active");
-    button.textContent = "Trạng thái ▼";
-  } else if (currentStatus === "active") {
-    nextStatus = "locked";
-    filteredUsers = users.filter(user => user.status === "locked");
-    button.textContent = "Trạng thái ▼";
-  } else {
-    nextStatus = "all";
-    filteredUsers = users;
-    button.textContent = "Trạng thái ▼";
-  }
-
-  button.setAttribute("data-status", nextStatus);
-  renderUsers(filteredUsers);
-});
-
 
 function prevPage() {
-  if (currentPage > 1) {
-    currentPage--;
-    document.getElementById("current-page-button").textContent = currentPage;
-    fetchUsersFromApi(currentPage)
-  } else {
-    alert("Bạn đang ở trang đầu tiên!");
-  }
+  const currentPage = document.querySelector('.page-number.active');
+  const currentPageNumber = parseInt(currentPage.textContent);
+  alert('Trang trước của trang ' + currentPageNumber);
 }
 
-async function nextPage() {
-  currentPage = currentPage + 1
-  const result = await fetchUsersFromApi(currentPage);
-  if(result === null){
-    alert("Đây đã là trang cuối rồi");
-    currentPage = currentPage - 1
-    return;
-  }
-  document.getElementById("current-page-button").textContent = currentPage;
-
+function nextPage() {
+  const currentPage = document.querySelector('.page-number.active');
+  const currentPageNumber = parseInt(currentPage.textContent);
+  alert('Trang sau của trang ' + currentPageNumber);
 }
-
 
 function showUserDetails(user, index) {
   document.getElementById("user-details").style.display = "block";
 
+  // Avatar và thông tin chung
   document.getElementById("detail-avatar").src = `https://i.pravatar.cc/60?u=${index}`;
   document.getElementById("detail-name").textContent = user.name;
   document.getElementById("detail-email").textContent = user.email;
-  document.getElementById("detail-status").textContent = user.status === "active" ? "Đang hoạt động 🟢 " : "Đã bị khoá 🔴 ";
+  document.getElementById("detail-status").textContent = user.status === "active" ? "🟢 Đang hoạt động" : "🔴 Đã bị khoá";
 
+  // Tab thông tin
   document.getElementById("info-name").textContent = user.name;
   document.getElementById("info-bio").textContent = user.bio || "";
   document.getElementById("info-gender").textContent = user.gender || "";
   document.getElementById("info-dob").textContent = user.dob || "";
   document.getElementById("info-location").textContent = user.location || "";
-  document.getElementById("info-interests").innerHTML = user.interests ? user.interests.join(",") : "";
+  document.getElementById("info-interests").innerHTML = user.interests ? user.interests.join("<br>") : "";
 
+  // Tab lịch sử báo cáo
   const reportContainer = document.getElementById("tab-content-reports");
-  reportContainer.innerHTML = "";
+  reportContainer.innerHTML = ""; // clear cũ
 
   if (user.reports && user.reports.length > 0) {
     const title = document.createElement("p");
@@ -522,32 +440,9 @@ function showUserDetails(user, index) {
   switchTab("info");
 }
 
-// Đóng cửa sổ chi tiết nếu click ra ngoài
-document.addEventListener("click", function (event) {
-  const userDetails = document.getElementById("user-details");
-
-  // Nếu cửa sổ đang hiển thị và click không nằm bên trong nó
-  if (
-    userDetails.style.display === "block" &&
-    !userDetails.contains(event.target) &&
-    !event.target.closest("tr") // tránh đóng khi click vào hàng người dùng
-  ) {
-    userDetails.style.display = "none";
-  }
-});
-
-function closeUserDetails() {
-  const userDetails = document.getElementById("user-details");
-  if (userDetails) {
-    userDetails.style.display = "none";
-  }
-}
 
 
-
-// Gọi API ngay khi trang tải xong
-document.addEventListener("DOMContentLoaded", fetchUsersFromApi(currentPage));
-</script>
-
+    renderUsers();
+  </script>
 </body>
 </html>

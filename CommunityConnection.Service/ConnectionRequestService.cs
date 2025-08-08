@@ -117,7 +117,7 @@ namespace CommunityConnection.Service
         {
             var channel = new Channel
             {
-                ChannelName = $"{userId1} + {userId2}",
+                ChannelName = $"{userId1}, {userId2}",
                 Description = "RoomChat",
                 CommunityId = null
             };

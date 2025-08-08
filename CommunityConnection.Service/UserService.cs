@@ -20,9 +20,9 @@ namespace CommunityConnection.Service
             _userDeviceRepository = userDeviceRepository;
         }
 
-        public IEnumerable<User> GetAllUsers()
+        public IEnumerable<User> GetAllUsers(int page, int pagesize)
         {
-            return _userRepository.GetAllUsers();
+            return _userRepository.GetAllUsers(page, pagesize);
         }
 
         public async Task<User> LoginAsync(LoginModel loginModel)
@@ -32,6 +32,12 @@ namespace CommunityConnection.Service
             {
                 return null;
             }
+
+            if(user.Status == false)
+            {
+                throw new UnauthorizedAccessException("Tài khoản bị khóa (Status) = False");
+            }
+
             if (!string.IsNullOrEmpty(loginModel.DeviceToken))
             {
                 var exists = await _userDeviceRepository.IsDeviceTokenExistAsync(loginModel.DeviceToken);
@@ -46,5 +52,18 @@ namespace CommunityConnection.Service
         {
             return await _userDeviceRepository.GetDeviceTokensByUserIdAsync(userId);
         }
+
+
+        public async Task<bool> UpdateUserStatusAsync(long userId, bool status)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) return false;
+
+            user.Status = status;
+            await _userRepository.UpdateAsync(user);
+
+            return true;
+        }
     }
+
 }

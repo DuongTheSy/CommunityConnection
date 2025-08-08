@@ -18,6 +18,4 @@ public partial class Channel
     public virtual Community? Community { get; set; }
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
-
-    public virtual ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
 }
