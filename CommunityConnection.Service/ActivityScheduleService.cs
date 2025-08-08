@@ -57,26 +57,28 @@ namespace CommunityConnection.Service
 
             var startDateTime = dto.Date.Value.Date + startSpan;
             var endDateTime = dto.Date.Value.Date + endSpan;
+            Console.WriteLine("dto.Date.Value.Date " + dto.Date.ToString());
+            Console.WriteLine("now " + now.ToString());
+            Console.WriteLine("start time:  " + startDateTime.ToString());
+            // if (startDateTime <= now)
+            // {
+            //     return (new ApiResponse<ActivitySchedule>
+            //     {
+            //         status = false,
+            //         message = "Thời gian bắt đầu phải lớn hơn thời điểm hiện tại.",
+            //         data = null
+            //     });
+            // }
 
-            if (startDateTime <= now)
-            {
-                return (new ApiResponse<ActivitySchedule>
-                {
-                    status = false,
-                    message = "Thời gian bắt đầu phải lớn hơn thời điểm hiện tại.",
-                    data = null
-                });
-            }
-
-            if (endDateTime <= startDateTime)
-            {
-                return (new ApiResponse<ActivitySchedule>
-                {
-                    status = false,
-                    message = "Thời gian kết thúc phải sau thời gian bắt đầu.",
-                    data = null
-                });
-            }
+            // if (endDateTime <= startDateTime)
+            // {
+            //     return (new ApiResponse<ActivitySchedule>
+            //     {
+            //         status = false,
+            //         message = "Thời gian kết thúc phải sau thời gian bắt đầu.",
+            //         data = null
+            //     });
+            // }
 
             // chưa bắt lỗi thời gian bắt đầu và kết thúc
 
@@ -155,25 +157,25 @@ namespace CommunityConnection.Service
                     data = null
                 });
 
-            if (dto.ActivityName != "")
+            if (dto.ActivityName != "" && dto.ActivityName != null)
                 schedule.ActivityName = dto.ActivityName;
 
-            if (dto.Description != "")
+            if (dto.Description != "" && dto.Description != null)
                 schedule.Description = dto.Description;
 
-            if (dto.Date > DateTime.Now)
-            {
-                schedule.Date = dto.Date;
-            }
-            else
-            {
-                return (new ApiResponse<ActivitySchedule>
-                {
-                    status = false,
-                    message = "Ngày hoàn thành dự kiến phải lớn hơn ngày hiện tại",
-                    data = null
-                });
-            }
+            // if (dto.Date > DateTime.Now)
+            // {
+            //     schedule.Date = dto.Date;
+            // }
+            // else
+            // {
+            //     return (new ApiResponse<ActivitySchedule>
+            //     {
+            //         status = false,
+            //         message = "Ngày hoàn thành dự kiến phải lớn hơn ngày hiện tại",
+            //         data = null
+            //     });
+            // }
 
             if (dto.StartTime != "")
                 schedule.StartTime = dto.StartTime;
