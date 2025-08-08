@@ -271,5 +271,26 @@ namespace CommunityConnection.WebApi.Controllers
 
             return Ok(result);
         }
+        [HttpPut("{communityId}/member/{userId}/role")]
+        public async Task<IActionResult> UpdateMemberRole(long communityId, long userId, [FromBody] UpdateRoleCommunity newRole)
+        {
+            long actingUserId = GetUserIdFromToken();
+
+            bool success = await _service.ChangeMemberRoleAsync(actingUserId, userId, communityId, newRole.newRole);
+
+            if (!success)
+                return Ok(new ApiResponse<string>
+                {
+                    status = false,
+                    message = "Bạn không có quyền hoặc không thể thay đổi vai trò này."
+                });
+
+            return Ok(new ApiResponse<string>
+            {
+                status = true,
+                message = "Vai trò đã được cập nhật"
+            });
+        }
+
     }
 }

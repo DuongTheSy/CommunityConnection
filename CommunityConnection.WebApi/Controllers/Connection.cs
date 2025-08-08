@@ -107,7 +107,11 @@ namespace CommunityConnection.WebApi.Controllers
             }
 
             var result = await _service.GetFriendsList(userId);
-            return Ok(result);
+            return Ok(new ApiResponse<List<ConnectionRequest>>{
+                status = true,
+                message = "Lấy danh sách bạn bè thành công",
+                data = result
+            });
         }
 
         [HttpGet("search")]

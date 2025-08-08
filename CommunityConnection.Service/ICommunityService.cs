@@ -19,5 +19,6 @@ namespace CommunityConnection.Service
         Task<ApiResponse<string>> JoinCommunityAsyncv2(long userId, long communityId);
         Task<ApiResponse<List<JoinRequest>>> GetJoinRequestsByCommunityIdAsync(long communityId, long userId);
         Task<ApiResponse<bool>> HandleJoinRequestAsync(long idRequest, long userId, bool isApproved);
+        Task<bool> ChangeMemberRoleAsync(long actingUserId, long targetUserId, long communityId, int newRole);
     }
 }

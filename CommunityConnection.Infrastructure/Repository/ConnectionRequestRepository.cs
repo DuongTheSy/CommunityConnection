@@ -65,6 +65,8 @@ namespace CommunityConnection.Infrastructure.Repository
         {
             return await _db.ConnectionRequests
                 .Where(cr => cr.Status == 1 && (cr.SenderUserId == userId || cr.ReceiverUserId == userId))
+                .Include(cr => cr.SenderUser)
+                .Include(cr => cr.ReceiverUser)
                 .ToListAsync();
         }
 

@@ -326,6 +326,30 @@ namespace CommunityConnection.Service
                 data = result
             };
         }
-       
+        public async Task<bool> ChangeMemberRoleAsync(long actingUserId, long targetUserId, long communityId, int newRole)
+        {
+            var actingMember = await _repository.GetMemberAsync(communityId, actingUserId);
+            var targetMember = await _repository.GetMemberAsync(communityId, targetUserId);
+
+            if (actingMember == null || targetMember == null)
+                return false;
+
+            if (actingMember.Role == 0)
+            {
+                // Chủ sở hữu: toàn quyền
+                return await _repository.UpdateMemberRoleAsync(communityId, targetUserId, newRole);
+            }
+
+            if (actingMember.Role == 8)
+            {
+                if (targetMember.Role == 0 || newRole == 0)
+                    return false;
+
+                return await _repository.UpdateMemberRoleAsync(communityId, targetUserId, newRole);
+            }
+
+            // Các role khác không được thay đổi
+            return false;
+        }
     }
 }

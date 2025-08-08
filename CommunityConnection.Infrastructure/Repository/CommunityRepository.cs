@@ -96,5 +96,16 @@ namespace CommunityConnection.Infrastructure.Repository
 
             return result;
         }
+        public async Task<bool> UpdateMemberRoleAsync(long communityId, long userId, int newRole)
+        {
+            var member = await GetMemberAsync(communityId, userId);
+            if (member == null)
+                return false;
+
+            member.Role = newRole;
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

@@ -23,6 +23,7 @@ namespace CommunityConnection.Infrastructure.Repository
         Task DeleteAsync(Community community);
         Task<List<SuggestMentor>> GetCommunitiesWithRole2MembersAsync();
 
+        Task<bool> UpdateMemberRoleAsync(long communityId, long userId, int newRole);
     }
 
 }
