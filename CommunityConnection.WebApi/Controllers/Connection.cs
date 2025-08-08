@@ -1,5 +1,6 @@
 ﻿using CommunityConnection.Common;
 using CommunityConnection.Entities.DTO;
+using CommunityConnection.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -108,6 +109,15 @@ namespace CommunityConnection.WebApi.Controllers
             var result = await _service.GetFriendsList(userId);
             return Ok(result);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers([FromQuery] string? keyword)
+        {
+            var result = await _service.SearchUsersAsync(keyword);
+            return Ok(result);
+        }
+
+
 
         private long GetUserIdFromToken()
         {

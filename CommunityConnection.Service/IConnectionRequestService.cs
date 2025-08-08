@@ -25,6 +25,7 @@ namespace CommunityConnection.Service
         Task<List<ConnectionRequest>> GetSentRequestsAsync(long SenderUserId);
         // lấy danh sách bạn bè
         Task<List<ConnectionRequest>> GetFriendsList(long SenderUserId);
+        Task<List<UserSearchResultDto>> SearchUsersAsync(string? keyword);
 
     }
 }

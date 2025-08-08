@@ -158,6 +158,11 @@ namespace CommunityConnection.Service
         {
             return await _repo.GetFriendsList(senderUserId);
         }
+        public async Task<List<UserSearchResultDto>> SearchUsersAsync(string? keyword)
+        {
+            return await _repo.SearchUsersAsync(keyword);
+        }
+
     }
 
 }

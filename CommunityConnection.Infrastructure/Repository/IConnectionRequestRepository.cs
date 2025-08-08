@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityConnection.Entities.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace CommunityConnection.Infrastructure.Repository
         Task<List<ConnectionRequest>> GetReceivedRequestsAsync(long receiverUserId);
         Task<List<ConnectionRequest>> GetSentRequestsAsync(long senderUserId);
         Task<List<ConnectionRequest>> GetFriendsList(long SenderUserId);
+        Task<List<UserSearchResultDto>> SearchUsersAsync(string? keyword);
     }
 
 }

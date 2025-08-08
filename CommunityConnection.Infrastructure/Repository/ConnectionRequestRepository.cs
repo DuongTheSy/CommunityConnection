@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityConnection.Entities.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityConnection.Infrastructure.Repository
@@ -66,6 +67,39 @@ namespace CommunityConnection.Infrastructure.Repository
                 .Where(cr => cr.Status == 1 && (cr.SenderUserId == userId || cr.ReceiverUserId == userId))
                 .ToListAsync();
         }
+
+        public async Task<List<UserSearchResultDto>> SearchUsersAsync(string? keyword)
+        {
+            keyword = keyword?.ToLower();
+
+            var query = _db.Users
+                .Include(u => u.Goals)
+                .Where(u => u.Status == true); // lọc người dùng đang hoạt động
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(u =>
+                    u.FullName!.ToLower().Contains(keyword) ||
+                    u.Username.ToLower().Contains(keyword) ||
+                    u.Goals.Any(g => g.GoalName.ToLower().Contains(keyword))
+                );
+            }
+
+            var result = await query
+                .Select(u => new UserSearchResultDto
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Username = u.Username,
+                    Email = u.Email,
+                    AvatarUrl = u.AvatarUrl,
+                    Goals = u.Goals.Select(g => g.GoalName).ToList()
+                })
+                .ToListAsync();
+
+            return result;
+        }
+
     }
 
 }
