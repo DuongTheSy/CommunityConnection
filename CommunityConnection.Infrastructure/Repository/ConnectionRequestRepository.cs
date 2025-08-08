@@ -53,12 +53,14 @@ namespace CommunityConnection.Infrastructure.Repository
         {
             return await _db.ConnectionRequests
                 .Where(cr => cr.ReceiverUserId == receiverUserId && cr.Status == 0)
+                .Include(cr => cr.SenderUser)
                 .ToListAsync();
         }
         public async Task<List<ConnectionRequest>> GetSentRequestsAsync(long SenderUserId)
         {
             return await _db.ConnectionRequests
                 .Where(cr => cr.SenderUserId == SenderUserId && cr.Status == 0)
+                .Include(cr => cr.ReceiverUser)
                 .ToListAsync();
         }
         public async Task<List<ConnectionRequest>> GetFriendsList(long userId)
